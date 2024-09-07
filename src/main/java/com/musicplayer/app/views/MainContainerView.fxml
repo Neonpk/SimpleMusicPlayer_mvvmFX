@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ListView?>
+<BorderPane id="borderPaneMain" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.musicplayer.app.views.MainContainerView">
+
+    <left>
+        <BorderPane minWidth="250" style="-fx-background-color: #000000; -fx-padding: 10 10 10 10;" BorderPane.alignment="CENTER_LEFT">
+
+            <center>
+                <BorderPane minWidth="150" style="-fx-background-color: #121212; -fx-background-radius: 20;" BorderPane.alignment="CENTER">
+                    <center>
+                        <VBox alignment="TOP_CENTER" style="-fx-padding: 10;">
+                            <Label text="Плейлисты"/>
+                            <ListView style="-fx-background-color: #121212;" fx:id="listViewPlaylist" />
+                        </VBox>
+                    </center>
+                </BorderPane>
+            </center>
+
+        </BorderPane>
+    </left>
+
+    <center>
+        <BorderPane style="-fx-background-color: #000000; -fx-padding: 10 10 10 0;" BorderPane.alignment="TOP_CENTER">
+            <center>
+                <BorderPane style="-fx-background-color: #121212; -fx-background-radius: 20;" BorderPane.alignment="TOP_CENTER">
+
+                </BorderPane>
+            </center>
+        </BorderPane>
+    </center>
+
+    <bottom>
+        <BorderPane minHeight="120" style="-fx-background-color: #000000;" BorderPane.alignment="BOTTOM_CENTER" >
+
+            <left>
+                <FlowPane hgap="15" alignment="CENTER_LEFT">
+
+                    <padding>
+                        <Insets left="15"/>
+                    </padding>
+
+                    <ImageView fitHeight="80" fitWidth="80" style="-fx-background-radius: 20;">
+                        <Image url="https://sun9-23.userapi.com/impg/EzWiXuJI13b9dZo2I8LHiz9Xd6JjiXau8yOqyQ/GDOtCZm7HB8.jpg?size=640x640&amp;quality=95&amp;sign=7d9365e0eeb65c5d111c549e9fb09d0f&amp;type=album"/>
+                    </ImageView>
+
+                    <VBox alignment="CENTER_LEFT">
+                        <Label text="Artist"/>
+                        <Label text="Title"/>
+                    </VBox>
+
+                </FlowPane>
+            </left>
+
+            <center>
+                <VBox alignment="CENTER" minWidth="550">
+
+                    <FlowPane hgap="10" alignment="CENTER">
+
+                        <padding>
+                            <Insets bottom="10"/>
+                        </padding>
+
+                        <Button text="prev"/>
+                        <Button text="Play/Pause" fx:id="playButton" onAction="#buttonPlayPausePressed" />
+                        <Button text="next"/>
+                    </FlowPane>
+
+                    <FlowPane hgap="10" alignment="CENTER">
+                        <Label text="00:00:00" fx:id="labelTimePosition"/>
+                        <Slider minWidth="250" prefWidth="420" fx:id="sliderProgress"/>
+                        <Label text="01:00:00" fx:id="labelDuration"/>
+                    </FlowPane>
+
+                </VBox>
+            </center>
+
+            <right>
+
+                <FlowPane hgap="10" alignment="CENTER_RIGHT" minWidth="150">
+
+                    <padding>
+                        <Insets right="10"/>
+                    </padding>
+
+                    <Button text="Mute"/>
+                    <Slider minWidth="100" fx:id="sliderVolume"/>
+
+                </FlowPane>
+
+            </right>
+
+        </BorderPane>
+    </bottom>
+
+</BorderPane>
