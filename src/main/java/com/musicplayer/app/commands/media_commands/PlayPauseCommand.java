@@ -14,39 +14,7 @@ import javafx.scene.image.Image;
 
 public class PlayPauseCommand extends DelegateCommand {
 
-    private static void playPause(MainContainerVmProperties mainContainerVmProperties) {
-
-        MediaPlayer mediaPlayer = mainContainerVmProperties.getMediaPlayer();
-
-        Property<Number> selectedProgress = mainContainerVmProperties.getSelectedProgressProperty();
-        Property<Number> selectedVolume = mainContainerVmProperties.getSelectedVolumeProperty();
-
-        StringProperty timePositionText = mainContainerVmProperties.getTimePositionProperty();
-        StringProperty timeDurationText = mainContainerVmProperties.getTimeDurationProperty();
-        StringProperty playButtonText = mainContainerVmProperties.getPlayButtonTextProperty();
-
-        mediaPlayer.setVolume( selectedVolume.getValue().floatValue() / 100 );
-
-        mediaPlayer.currentTimeProperty().addListener(((observableValue, oldValue, newValue) -> {
-
-            mainContainerVmProperties.getSliderProgressUpdateProperty().setValue(true);
-            try
-            {
-                Duration duration = mediaPlayer.getTotalDuration();
-                double durationSeconds = duration.toSeconds();
-                double durationMinutes = duration.toMinutes();
-
-                double posSeconds = newValue.toSeconds();
-                double posMinutes = newValue.toMinutes();
-
-                timePositionText.setValue(String.format("%02d:%02d", (int) posMinutes % 60, (int) posSeconds % 60));
-                timeDurationText.setValue(String.format("%02d:%02d", (int) durationMinutes % 60, (int) durationSeconds % 60));
-
-                selectedProgress.setValue(posSeconds / durationSeconds * 100);
-            } finally {
-                mainContainerVmProperties.getSliderProgressUpdateProperty().setValue(false);
-            }
-        }));
+    private static void playPause(MediaPlayer mediaPlayer, StringProperty playButtonText) {
 
         switch(mediaPlayer.getStatus()) {
             case MediaPlayer.Status.PAUSED, MediaPlayer.Status.READY -> {
@@ -64,11 +32,11 @@ public class PlayPauseCommand extends DelegateCommand {
         }
     }
 
-    public PlayPauseCommand(MainContainerVmProperties mainContainerVmProperties) {
+    public PlayPauseCommand(MediaPlayer mediaPlayer, StringProperty playButtonText) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                playPause(mainContainerVmProperties);
+                playPause(mediaPlayer, playButtonText);
             }
         });
     }

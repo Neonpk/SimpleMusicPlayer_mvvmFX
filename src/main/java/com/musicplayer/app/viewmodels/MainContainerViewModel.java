@@ -49,26 +49,28 @@ public class MainContainerViewModel implements ViewModel {
 
     // Commands
 
-    private final Command playPauseCommand = new PlayPauseCommand(
-            new MainContainerVmProperties(
-                    mediaPlayer, selectedProgress, selectedVolume,
-                    timePositionText, timeDurationText, playButtonText, sliderProgressUpdate
-            )
-    );
-
+    private final Command playPauseCommand = new PlayPauseCommand(mediaPlayer, playButtonText);
     private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayer, selectedVolume);
     private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayer, muteButtonText);
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayer, selectedProgress);
 
-    private final Command initializeMetadataCommand = new InitializeMetadataCommand(
+    private final Command initializeMetadataListenerCommand = new InitializeMetadataListenerCommand(
             mediaPlayer.getMedia(),
             new MetadataSnd(titleText, artistText, fileNameText, imageCover)
+    );
+
+    private final Command initializeTimeListenerCommand = new InitializeTimeListenerCommand(
+            new MainContainerVmProperties(
+                mediaPlayer, selectedProgress, selectedVolume,
+                timePositionText, timeDurationText, playButtonText, sliderProgressUpdate
+            )
     );
 
     // Constructor
 
     public MainContainerViewModel() {
-        initializeMetadataCommand.execute();
+        initializeMetadataListenerCommand.execute();
+        initializeTimeListenerCommand.execute();
     }
 
     // Methods (getters and setters)
