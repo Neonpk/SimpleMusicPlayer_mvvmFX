@@ -11,6 +11,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.WritableImage?>
 <BorderPane id="borderPaneMain" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.musicplayer.app.views.MainContainerView">
 
@@ -51,13 +52,12 @@
                         <Insets left="15"/>
                     </padding>
 
-                    <ImageView fitHeight="80" fitWidth="80" style="-fx-background-radius: 20;">
-                        <Image url="https://sun9-23.userapi.com/impg/EzWiXuJI13b9dZo2I8LHiz9Xd6JjiXau8yOqyQ/GDOtCZm7HB8.jpg?size=640x640&amp;quality=95&amp;sign=7d9365e0eeb65c5d111c549e9fb09d0f&amp;type=album"/>
-                    </ImageView>
+                    <ImageView fitHeight="80" fitWidth="80" style="-fx-background-radius: 20;" fx:id="imageViewCover" />
 
                     <VBox alignment="CENTER_LEFT">
-                        <Label text="Artist"/>
-                        <Label text="Title"/>
+                        <Label text="Artist" fx:id="labelArtist"/>
+                        <Label text="Title" fx:id="labelTitle" />
+                        <Label text="FileName" fx:id="labelFileName" />
                     </VBox>
 
                 </FlowPane>
@@ -73,7 +73,7 @@
                         </padding>
 
                         <Button text="prev"/>
-                        <Button text="Play/Pause" fx:id="playButton" onAction="#buttonPlayPausePressed" />
+                        <Button fx:id="playButton"/>
                         <Button text="next"/>
                     </FlowPane>
 
@@ -94,8 +94,8 @@
                         <Insets right="10"/>
                     </padding>
 
-                    <Button text="Mute"/>
-                    <Slider minWidth="100" fx:id="sliderVolume"/>
+                    <Button fx:id="muteButton" />
+                    <Slider minWidth="100" fx:id="sliderVolume" />
 
                 </FlowPane>
 

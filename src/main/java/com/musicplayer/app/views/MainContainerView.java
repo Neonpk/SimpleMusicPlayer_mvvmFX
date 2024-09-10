@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,6 +30,9 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     private Button playButton;
 
     @FXML
+    private Button muteButton;
+
+    @FXML
     private Slider sliderVolume;
 
     @FXML
@@ -40,8 +44,22 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     @FXML
     private Label labelDuration;
 
+    @FXML
+    Label labelArtist;
+
+    @FXML
+    Label labelTitle;
+
+    @FXML
+    Label labelFileName;
+
+    @FXML
+    ImageView imageViewCover;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // Bindings
 
         listViewPlaylist.setItems( viewModel.getPlaylistProperty() );
 
@@ -51,11 +69,27 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
         labelTimePosition.textProperty().bindBidirectional( viewModel.getTimePositionProperty() );
         labelDuration.textProperty().bindBidirectional( viewModel.getTimeDurationProperty() );
 
-        playButton.disableProperty().bind( viewModel.getListViewEditCommand().executableProperty().not() );
-    }
+        labelArtist.textProperty().bindBidirectional( viewModel.getArtistTextProperty() );
+        labelTitle.textProperty().bindBidirectional( viewModel.getTitleTextProperty() );
+        labelFileName.textProperty().bindBidirectional( viewModel.getFileNameTextProperty() );
 
-    @FXML
-    void buttonPlayPausePressed() {
-        viewModel.getListViewEditCommand().execute();
+        muteButton.textProperty().bindBidirectional( viewModel.getMuteButtonTextProperty() );
+
+        playButton.textProperty().bindBidirectional( viewModel.getPlayButtonTextProperty() );
+        playButton.disableProperty().bind( viewModel.getPlayPauseCommand().executableProperty().not() );
+
+        imageViewCover.imageProperty().bindBidirectional( viewModel.getImageCoverProperty() );
+
+        // Events
+
+        sliderProgress.valueProperty().addListener( (_) -> {
+            boolean isUpdating = viewModel.getSliderProgressUpdateProperty().getValue();
+            if (!isUpdating) viewModel.getSeekAudioCommand().execute();
+        } );
+
+        sliderVolume.valueProperty().addListener( (_) -> viewModel.getVolumeControlCommand().execute() );
+
+        playButton.setOnAction( (_) -> viewModel.getPlayPauseCommand().execute() );
+        muteButton.setOnAction( (_) -> viewModel.getMuteAudioCommand().execute() );
     }
 }

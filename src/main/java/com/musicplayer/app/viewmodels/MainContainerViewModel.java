@@ -1,14 +1,23 @@
 package com.musicplayer.app.viewmodels;
 
+import com.musicplayer.app.AppStarter;
+import com.musicplayer.app.commands.media_commands.MuteAudioCommand;
 import com.musicplayer.app.commands.media_commands.PlayPauseCommand;
+import com.musicplayer.app.commands.media_commands.SeekAudioCommand;
+import com.musicplayer.app.commands.media_commands.VolumeControlCommand;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.image.Image;
+
+import java.util.Objects;
+
+//import java.util.PriorityQueue;
 
 public class MainContainerViewModel implements ViewModel {
 
@@ -16,26 +25,76 @@ public class MainContainerViewModel implements ViewModel {
 
     private final ObservableList<String> playlist = FXCollections.observableArrayList();
 
-    private final Property<Number> selectedVolume = new SimpleObjectProperty<>(0.0f);
+    private final Property<Number> selectedVolume = new SimpleObjectProperty<>(50.0f);
     private final Property<Number> selectedProgress = new SimpleObjectProperty<>(0.0f);
 
     private final StringProperty timePositionText = new SimpleStringProperty("00:00");
     private final StringProperty timeDurationText = new SimpleStringProperty("00:00");
 
+    private final StringProperty artistText = new SimpleStringProperty("Unknown artist");
+    private final StringProperty titleText = new SimpleStringProperty("Unknown title");
+    private final StringProperty fileNameText = new SimpleStringProperty("FileName not found.");
+
+    private final StringProperty playButtonText = new SimpleStringProperty(">");
+    private final StringProperty muteButtonText = new SimpleStringProperty("Mute");
+
+    private final Property<Boolean> sliderProgressUpdate = new SimpleObjectProperty<>(false);
+
+    private final Property<Image> imageCover = new SimpleObjectProperty<>(
+            new Image( Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString() )
+    );
+
+    // Fields
+
+    private final Media media = new Media("file:///home/chichard/Музыка/timberlake.mp3");
+    private final MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+    //private final PriorityQueue<String> playlistQueue = new PriorityQueue<>(playlist);
+
     // Commands
 
-    private final Command listViewEditCommand = new PlayPauseCommand();
+    private final Command playPauseCommand = new PlayPauseCommand(this);
+    private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayer, selectedVolume);
+    private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayer, muteButtonText);
+    private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayer, selectedProgress);
 
     // Constructor
 
     public MainContainerViewModel() {
+        fileNameText.setValue( media.getSource().replaceFirst(".*/(.*\\.(?:mp3|mp4))", "$1") );
+
+        mediaPlayer.getMedia().getMetadata().addListener((MapChangeListener<String, Object>) ch -> {
+            if (ch.wasAdded()) {
+                switch(String.valueOf(ch.getKey())) {
+                    case "title" -> titleText.setValue(ch.getValueAdded().toString());
+                    case "artist" -> artistText.setValue(ch.getValueAdded().toString());
+                    case "image" -> imageCover.setValue((Image) ch.getValueAdded());
+                }
+            }
+        });
     }
 
     // Methods (getters and setters)
 
-    public Command getListViewEditCommand() {
-        return listViewEditCommand;
+    // -> Commands //
+
+    public Command getPlayPauseCommand() {
+        return playPauseCommand;
     }
+
+    public Command getVolumeControlCommand() {
+        return volumeControlCommand;
+    }
+
+    public Command getMuteAudioCommand() {
+        return muteAudioCommand;
+    }
+
+    public Command getSeekAudioCommand() {
+        return seekAudioCommand;
+    }
+
+    // -> Properties //
 
     public ObservableList<String> getPlaylistProperty() {
         return playlist;
@@ -55,6 +114,38 @@ public class MainContainerViewModel implements ViewModel {
 
     public StringProperty getTimeDurationProperty() {
         return timeDurationText;
+    }
+
+    public StringProperty getPlayButtonTextProperty() {
+        return playButtonText;
+    }
+
+    public StringProperty getMuteButtonTextProperty() {
+        return muteButtonText;
+    }
+
+    public StringProperty getArtistTextProperty() {
+        return artistText;
+    }
+
+    public StringProperty getTitleTextProperty() {
+        return titleText;
+    }
+
+    public StringProperty getFileNameTextProperty() {
+        return fileNameText;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public Property<Image> getImageCoverProperty() {
+        return imageCover;
+    }
+
+    public Property<Boolean> getSliderProgressUpdateProperty() {
+        return sliderProgressUpdate;
     }
 
 }

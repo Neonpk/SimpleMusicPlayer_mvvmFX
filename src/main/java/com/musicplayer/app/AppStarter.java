@@ -15,7 +15,7 @@ public class AppStarter extends Application {
         stage.setTitle("test");
 
         Parent root = FluentViewLoader.fxmlView(MainContainerView.class).load().getView();
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1400, 720));
         stage.show();
     }
 

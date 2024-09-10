@@ -26,6 +26,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+      <version>22.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
       <version>1.7.13</version>
@@ -67,6 +72,9 @@
     <resources>
       <resource>
         <directory>src/main/java</directory>
+      </resource>
+      <resource>
+        <directory>src/resources/</directory>
       </resource>
     </resources>
     <plugins>
