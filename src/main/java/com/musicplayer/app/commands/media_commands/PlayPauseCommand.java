@@ -17,7 +17,7 @@ public class PlayPauseCommand extends DelegateCommand {
     private static void playPause(MediaPlayer mediaPlayer, StringProperty playButtonText) {
 
         switch(mediaPlayer.getStatus()) {
-            case MediaPlayer.Status.PAUSED, MediaPlayer.Status.READY -> {
+            case MediaPlayer.Status.PAUSED, MediaPlayer.Status.READY, MediaPlayer.Status.STOPPED -> {
                 playButtonText.setValue("||");
                 mediaPlayer.play();
             }

@@ -33,6 +33,9 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     private Button muteButton;
 
     @FXML
+    private Button repeatButton;
+
+    @FXML
     private Slider sliderVolume;
 
     @FXML
@@ -74,6 +77,7 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
         labelFileName.textProperty().bindBidirectional( viewModel.getFileNameTextProperty() );
 
         muteButton.textProperty().bindBidirectional( viewModel.getMuteButtonTextProperty() );
+        repeatButton.textProperty().bindBidirectional( viewModel.getRepeatButtonTextProperty() );
 
         playButton.textProperty().bindBidirectional( viewModel.getPlayButtonTextProperty() );
         playButton.disableProperty().bind( viewModel.getPlayPauseCommand().executableProperty().not() );
@@ -91,5 +95,6 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
 
         playButton.setOnAction( (_) -> viewModel.getPlayPauseCommand().execute() );
         muteButton.setOnAction( (_) -> viewModel.getMuteAudioCommand().execute() );
+        repeatButton.setOnAction( (_) -> viewModel.getRepeatAudioCommand().execute() );
     }
 }

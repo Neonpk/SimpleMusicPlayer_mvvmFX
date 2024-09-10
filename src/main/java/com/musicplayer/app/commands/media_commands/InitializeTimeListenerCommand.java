@@ -42,6 +42,18 @@ public class InitializeTimeListenerCommand extends DelegateCommand {
 
         }));
 
+        mediaPlayer.setOnEndOfMedia(() -> {
+
+            boolean isRepeat = mainContainerVmProperties.getRepeatStatusProperty().getValue();
+            StringProperty playButtonText = mainContainerVmProperties.getPlayButtonTextProperty();
+
+            if(!isRepeat) {
+                mediaPlayer.stop();
+                playButtonText.setValue(">");
+            }
+
+        });
+
     }
 
     public InitializeTimeListenerCommand(MainContainerVmProperties mainContainerVmProperties) {

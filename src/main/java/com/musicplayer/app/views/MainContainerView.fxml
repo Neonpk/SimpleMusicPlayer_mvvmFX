@@ -75,6 +75,7 @@
                         <Button text="prev"/>
                         <Button fx:id="playButton"/>
                         <Button text="next"/>
+                        <Button text="repeat" fx:id="repeatButton"/>
                     </FlowPane>
 
                     <FlowPane hgap="10" alignment="CENTER">

@@ -35,8 +35,10 @@ public class MainContainerViewModel implements ViewModel {
 
     private final StringProperty playButtonText = new SimpleStringProperty(">");
     private final StringProperty muteButtonText = new SimpleStringProperty("Mute");
+    private final StringProperty repeatButtonText = new SimpleStringProperty("Repeat");
 
     private final Property<Boolean> sliderProgressUpdate = new SimpleObjectProperty<>(false);
+    private final Property<Boolean> repeatStatus = new SimpleObjectProperty<>(false);
 
     private final Property<Image> imageCover = new SimpleObjectProperty<>(
             new Image( Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString() )
@@ -53,6 +55,7 @@ public class MainContainerViewModel implements ViewModel {
     private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayer, selectedVolume);
     private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayer, muteButtonText);
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayer, selectedProgress);
+    private final Command repeatAudioCommand = new RepeatAudioCommand(mediaPlayer, repeatStatus, repeatButtonText);
 
     private final Command initializeMetadataListenerCommand = new InitializeMetadataListenerCommand(
             mediaPlayer.getMedia(),
@@ -61,8 +64,8 @@ public class MainContainerViewModel implements ViewModel {
 
     private final Command initializeTimeListenerCommand = new InitializeTimeListenerCommand(
             new MainContainerVmProperties(
-                mediaPlayer, selectedProgress, selectedVolume,
-                timePositionText, timeDurationText, playButtonText, sliderProgressUpdate
+                mediaPlayer, selectedProgress, selectedVolume, timePositionText,
+                    timeDurationText, playButtonText, sliderProgressUpdate, repeatStatus
             )
     );
 
@@ -93,6 +96,10 @@ public class MainContainerViewModel implements ViewModel {
         return seekAudioCommand;
     }
 
+    public Command getRepeatAudioCommand() {
+        return repeatAudioCommand;
+    }
+
     // -> Properties //
 
     public ObservableList<String> getPlaylistProperty() {
@@ -119,6 +126,10 @@ public class MainContainerViewModel implements ViewModel {
         return playButtonText;
     }
 
+    public StringProperty getRepeatButtonTextProperty() {
+        return repeatButtonText;
+    }
+
     public StringProperty getMuteButtonTextProperty() {
         return muteButtonText;
     }
@@ -133,10 +144,6 @@ public class MainContainerViewModel implements ViewModel {
 
     public StringProperty getFileNameTextProperty() {
         return fileNameText;
-    }
-
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
     }
 
     public Property<Image> getImageCoverProperty() {

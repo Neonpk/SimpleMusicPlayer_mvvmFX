@@ -13,6 +13,7 @@ public class MainContainerVmProperties {
     private final StringProperty timeDurationText;
     private final StringProperty playButtonText;
     private final Property<Boolean> sliderProgressUpdateProperty;
+    private final Property<Boolean> repeatStatusProperty;
 
     public MainContainerVmProperties(
             MediaPlayer mediaPlayer,
@@ -21,7 +22,8 @@ public class MainContainerVmProperties {
             StringProperty timePositionText,
             StringProperty timeDurationText,
             StringProperty playButtonText,
-            Property<Boolean> sliderProgressUpdateProperty
+            Property<Boolean> sliderProgressUpdateProperty,
+            Property<Boolean> repeatStatusProperty
             ) {
 
         this.mediaPlayer = mediaPlayer;
@@ -31,6 +33,7 @@ public class MainContainerVmProperties {
         this.timePositionText = timePositionText;
         this.playButtonText = playButtonText;
         this.sliderProgressUpdateProperty = sliderProgressUpdateProperty;
+        this.repeatStatusProperty = repeatStatusProperty;
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -59,6 +62,10 @@ public class MainContainerVmProperties {
 
     public Property<Boolean> getSliderProgressUpdateProperty() {
         return sliderProgressUpdateProperty;
+    }
+
+    public Property<Boolean> getRepeatStatusProperty() {
+        return repeatStatusProperty;
     }
 
 }
