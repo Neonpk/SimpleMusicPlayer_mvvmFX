@@ -1,5 +1,6 @@
 package com.musicplayer.app.commands.media_commands;
 
+import com.musicplayer.app.models.MainContainerVmProperties;
 import com.musicplayer.app.viewmodels.MainContainerViewModel;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -13,26 +14,22 @@ import javafx.scene.image.Image;
 
 public class PlayPauseCommand extends DelegateCommand {
 
-    private static void playPause(MainContainerViewModel mainContainerViewModel) {
+    private static void playPause(MainContainerVmProperties mainContainerVmProperties) {
 
-        MediaPlayer mediaPlayer = mainContainerViewModel.getMediaPlayer();
+        MediaPlayer mediaPlayer = mainContainerVmProperties.getMediaPlayer();
 
-        Property<Number> selectedProgress = mainContainerViewModel.getSelectedProgressProperty();
-        Property<Number> selectedVolume = mainContainerViewModel.getSelectedVolumeProperty();
+        Property<Number> selectedProgress = mainContainerVmProperties.getSelectedProgressProperty();
+        Property<Number> selectedVolume = mainContainerVmProperties.getSelectedVolumeProperty();
 
-        StringProperty artistText = mainContainerViewModel.getArtistTextProperty();
-        StringProperty titleText = mainContainerViewModel.getTitleTextProperty();
-        Property<Image> imageCover = mainContainerViewModel.getImageCoverProperty();
-
-        StringProperty timePositionText = mainContainerViewModel.getTimePositionProperty();
-        StringProperty timeDurationText = mainContainerViewModel.getTimeDurationProperty();
-        StringProperty playButtonText = mainContainerViewModel.getPlayButtonTextProperty();
+        StringProperty timePositionText = mainContainerVmProperties.getTimePositionProperty();
+        StringProperty timeDurationText = mainContainerVmProperties.getTimeDurationProperty();
+        StringProperty playButtonText = mainContainerVmProperties.getPlayButtonTextProperty();
 
         mediaPlayer.setVolume( selectedVolume.getValue().floatValue() / 100 );
 
         mediaPlayer.currentTimeProperty().addListener(((observableValue, oldValue, newValue) -> {
 
-            mainContainerViewModel.getSliderProgressUpdateProperty().setValue(true);
+            mainContainerVmProperties.getSliderProgressUpdateProperty().setValue(true);
             try
             {
                 Duration duration = mediaPlayer.getTotalDuration();
@@ -47,7 +44,7 @@ public class PlayPauseCommand extends DelegateCommand {
 
                 selectedProgress.setValue(posSeconds / durationSeconds * 100);
             } finally {
-                mainContainerViewModel.getSliderProgressUpdateProperty().setValue(false);
+                mainContainerVmProperties.getSliderProgressUpdateProperty().setValue(false);
             }
         }));
 
@@ -67,11 +64,11 @@ public class PlayPauseCommand extends DelegateCommand {
         }
     }
 
-    public PlayPauseCommand(MainContainerViewModel mainContainerViewModel) {
+    public PlayPauseCommand(MainContainerVmProperties mainContainerVmProperties) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                playPause(mainContainerViewModel);
+                playPause(mainContainerVmProperties);
             }
         });
     }

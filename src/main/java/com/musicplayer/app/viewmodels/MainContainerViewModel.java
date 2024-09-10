@@ -1,15 +1,13 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.AppStarter;
-import com.musicplayer.app.commands.media_commands.MuteAudioCommand;
-import com.musicplayer.app.commands.media_commands.PlayPauseCommand;
-import com.musicplayer.app.commands.media_commands.SeekAudioCommand;
-import com.musicplayer.app.commands.media_commands.VolumeControlCommand;
+import com.musicplayer.app.commands.media_commands.*;
+import com.musicplayer.app.models.MainContainerVmProperties;
+import com.musicplayer.app.models.MetadataSnd;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -49,29 +47,28 @@ public class MainContainerViewModel implements ViewModel {
     private final Media media = new Media("file:///home/chichard/Музыка/timberlake.mp3");
     private final MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-    //private final PriorityQueue<String> playlistQueue = new PriorityQueue<>(playlist);
-
     // Commands
 
-    private final Command playPauseCommand = new PlayPauseCommand(this);
+    private final Command playPauseCommand = new PlayPauseCommand(
+            new MainContainerVmProperties(
+                    mediaPlayer, selectedProgress, selectedVolume,
+                    timePositionText, timeDurationText, playButtonText, sliderProgressUpdate
+            )
+    );
+
     private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayer, selectedVolume);
     private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayer, muteButtonText);
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayer, selectedProgress);
 
+    private final Command initializeMetadataCommand = new InitializeMetadataCommand(
+            mediaPlayer.getMedia(),
+            new MetadataSnd(titleText, artistText, fileNameText, imageCover)
+    );
+
     // Constructor
 
     public MainContainerViewModel() {
-        fileNameText.setValue( media.getSource().replaceFirst(".*/(.*\\.(?:mp3|mp4))", "$1") );
-
-        mediaPlayer.getMedia().getMetadata().addListener((MapChangeListener<String, Object>) ch -> {
-            if (ch.wasAdded()) {
-                switch(String.valueOf(ch.getKey())) {
-                    case "title" -> titleText.setValue(ch.getValueAdded().toString());
-                    case "artist" -> artistText.setValue(ch.getValueAdded().toString());
-                    case "image" -> imageCover.setValue((Image) ch.getValueAdded());
-                }
-            }
-        });
+        initializeMetadataCommand.execute();
     }
 
     // Methods (getters and setters)
