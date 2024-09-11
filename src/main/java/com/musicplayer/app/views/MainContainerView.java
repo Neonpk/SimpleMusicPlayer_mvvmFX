@@ -36,6 +36,12 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     private Button repeatButton;
 
     @FXML
+    private Button nextButton;
+
+    @FXML
+    private Button prevButton;
+
+    @FXML
     private Slider sliderVolume;
 
     @FXML
@@ -96,5 +102,7 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
         playButton.setOnAction( (_) -> viewModel.getPlayPauseCommand().execute() );
         muteButton.setOnAction( (_) -> viewModel.getMuteAudioCommand().execute() );
         repeatButton.setOnAction( (_) -> viewModel.getRepeatAudioCommand().execute() );
+        nextButton.setOnAction((_) -> viewModel.getSwitchNextAudioCommand().execute() );
+        prevButton.setOnAction((_) -> viewModel.getSwitchPrevAudioCommand().execute() );
     }
 }

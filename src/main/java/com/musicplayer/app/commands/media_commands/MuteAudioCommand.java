@@ -2,6 +2,7 @@ package com.musicplayer.app.commands.media_commands;
 
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.scene.media.MediaPlayer;
 
@@ -15,11 +16,11 @@ public class MuteAudioCommand extends DelegateCommand {
         mediaPlayer.setMute(!isMuted);
     }
 
-    public MuteAudioCommand(MediaPlayer mediaPlayer, StringProperty muteButtonText) {
+    public MuteAudioCommand(Property<MediaPlayer> mediaPlayer, StringProperty muteButtonText) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                mute(mediaPlayer, muteButtonText);
+                mute(mediaPlayer.getValue(), muteButtonText);
             }
         });
     }

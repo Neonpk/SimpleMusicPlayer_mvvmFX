@@ -72,9 +72,9 @@
                             <Insets bottom="10"/>
                         </padding>
 
-                        <Button text="prev"/>
+                        <Button text="prev" fx:id="prevButton" />
                         <Button fx:id="playButton"/>
-                        <Button text="next"/>
+                        <Button text="next" fx:id="nextButton" />
                         <Button text="repeat" fx:id="repeatButton"/>
                     </FlowPane>
 

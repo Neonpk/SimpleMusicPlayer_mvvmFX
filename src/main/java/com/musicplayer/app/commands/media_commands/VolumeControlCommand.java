@@ -12,11 +12,11 @@ public class VolumeControlCommand extends DelegateCommand {
         mediaPlayer.setVolume( selectedVolume.getValue().floatValue() / 100 );
     }
 
-    public VolumeControlCommand(MediaPlayer mediaPlayer, Property<Number> selectedVolume) {
+    public VolumeControlCommand(Property<MediaPlayer> mediaPlayer, Property<Number> selectedVolume) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                setVolume(mediaPlayer, selectedVolume);
+                setVolume(mediaPlayer.getValue(), selectedVolume);
             }
         });
     }

@@ -14,11 +14,11 @@ public class SeekAudioCommand extends DelegateCommand {
         mediaPlayer.seek( selectedTime );
     }
 
-    public SeekAudioCommand(MediaPlayer mediaPlayer, Property<Number> selectedProgress) {
+    public SeekAudioCommand(Property<MediaPlayer> mediaPlayer, Property<Number> selectedProgress) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                rewindAudio(mediaPlayer, selectedProgress);
+                rewindAudio(mediaPlayer.getValue(), selectedProgress);
             }
         });
     }

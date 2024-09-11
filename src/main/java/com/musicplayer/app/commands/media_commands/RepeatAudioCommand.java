@@ -16,11 +16,11 @@ public class RepeatAudioCommand extends DelegateCommand {
         mediaPlayer.setCycleCount(isRepeat.getValue() ? MediaPlayer.INDEFINITE : 0);
     }
 
-    public RepeatAudioCommand(MediaPlayer mediaPlayer, Property<Boolean> isRepeat, StringProperty repeatButtonText) {
+    public RepeatAudioCommand(Property<MediaPlayer> mediaPlayer, Property<Boolean> isRepeat, StringProperty repeatButtonText) {
         super(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                repeat(mediaPlayer, isRepeat, repeatButtonText);
+                repeat(mediaPlayer.getValue(), isRepeat, repeatButtonText);
             }
         });
     }
