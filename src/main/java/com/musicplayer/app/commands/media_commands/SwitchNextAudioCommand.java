@@ -3,12 +3,14 @@ package com.musicplayer.app.commands.media_commands;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class SwitchNextAudioCommand extends DelegateCommand {
@@ -30,13 +32,17 @@ public class SwitchNextAudioCommand extends DelegateCommand {
     private static void setNewMedia(String filePath,
                                     Property<Media> mediaProperty,
                                     Property<MediaPlayer> mediaPlayerProperty,
+                                    HashMap<String, Object> metaDataHash,
+                                    Property<Number> selectedVolume,
                                     ChangeListener<Duration> durationChangeListener,
                                     MapChangeListener<String, Object> metaDataListenger,
                                     Runnable onEndMediaListener) {
 
+        metaDataHash.clear();
         Media newMedia = new Media(filePath);
         MediaPlayer newMediaPlayer = new MediaPlayer(newMedia);
         newMedia.getMetadata().addListener(metaDataListenger);
+        newMediaPlayer.setVolume( selectedVolume.getValue().floatValue() / 100 );
         newMediaPlayer.currentTimeProperty().addListener(durationChangeListener);
         newMediaPlayer.setOnEndOfMedia(onEndMediaListener);
         mediaProperty.setValue(newMedia);
@@ -46,6 +52,9 @@ public class SwitchNextAudioCommand extends DelegateCommand {
     private static void next(List<String> fileNamesList,
                              Property<Media> mediaProperty,
                              Property<MediaPlayer> mediaPlayerProperty,
+                             HashMap<String, Object> metaDataHash,
+                             StringProperty playButtonTextProperty,
+                             Property<Number> selectedVolume,
                              Property<Number> selectedAudioIndex,
                              ChangeListener<Duration> durationChangeListener,
                              MapChangeListener<String, Object> metaDataListenger,
@@ -59,8 +68,12 @@ public class SwitchNextAudioCommand extends DelegateCommand {
         String filePath = fileNamesList.get(index);
 
         disposeOldMedia(mediaProperty, mediaPlayerProperty, durationChangeListener, metaDataListenger);
-        setNewMedia(filePath, mediaProperty, mediaPlayerProperty, durationChangeListener, metaDataListenger, onEndMediaListener);
+        setNewMedia(
+                filePath, mediaProperty, mediaPlayerProperty, metaDataHash,
+                selectedVolume, durationChangeListener, metaDataListenger, onEndMediaListener
+        );
 
+        playButtonTextProperty.setValue("||");
         mediaPlayerProperty.getValue().play();
 
         selectedAudioIndex.setValue(index);
@@ -69,6 +82,9 @@ public class SwitchNextAudioCommand extends DelegateCommand {
     public SwitchNextAudioCommand(List<String> fileNamesList,
                                   Property<Media> mediaProperty,
                                   Property<MediaPlayer> mediaPlayerProperty,
+                                  HashMap<String, Object> metaDataHash,
+                                  StringProperty playButtonTextProperty,
+                                  Property<Number> selectedVolume,
                                   Property<Number> selectedAudioIndex,
                                   ChangeListener<Duration> durationChangeListener,
                                   MapChangeListener<String, Object> metaDataListenger,
@@ -78,8 +94,8 @@ public class SwitchNextAudioCommand extends DelegateCommand {
             @Override
             protected void action() throws Exception {
                 next(
-                        fileNamesList, mediaProperty, mediaPlayerProperty,
-                        selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener
+                        fileNamesList, mediaProperty, mediaPlayerProperty, metaDataHash, playButtonTextProperty,
+                        selectedVolume, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener
                 );
             }
         });

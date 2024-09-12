@@ -2,6 +2,7 @@ package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.*;
+import com.musicplayer.app.models.MediaListeners;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -56,49 +57,7 @@ public class MainContainerViewModel implements ViewModel {
 
     // Fields => Listeners
 
-    private final MapChangeListener<String, Object> metaDataListenger = (MapChangeListener<String, Object>) ch -> {
-
-        if (ch.wasAdded()) {
-            switch(String.valueOf(ch.getKey())) {
-                case "artist" -> artistText.setValue(ch.getValueAdded().toString());
-                case "title" -> titleText.setValue(ch.getValueAdded().toString());
-                case "image" -> imageCover.setValue((Image) ch.getValueAdded());
-                case "raw metadata" -> {
-                    fileNameText.setValue(mediaPlayer.getValue().getMedia().getSource().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1"));
-                }
-            }
-        }
-    };
-
-    private final ChangeListener<Duration> durationChangeListener = (observableValue, oldValue, newValue) -> {
-
-        sliderProgressUpdate.setValue(true);
-
-        try {
-            Duration duration = mediaPlayer.getValue().getTotalDuration();
-            double durationSeconds = duration.toSeconds();
-            double durationMinutes = duration.toMinutes();
-
-            double posSeconds = newValue.toSeconds();
-            double posMinutes = newValue.toMinutes();
-
-            timePositionText.setValue(String.format("%02d:%02d", (int) posMinutes % 60, (int) posSeconds % 60));
-            timeDurationText.setValue(String.format("%02d:%02d", (int) durationMinutes % 60, (int) durationSeconds % 60));
-
-            selectedProgress.setValue(posSeconds / durationSeconds * 100);
-        } finally {
-            sliderProgressUpdate.setValue(false);
-        }
-
-    };
-
-    private final Runnable onEndMediaListener = new Runnable() {
-        @Override
-        public void run() {
-            boolean isRepeat = repeatStatus.getValue();
-            if(!isRepeat) switchNextAudioCommand.execute();
-        }
-    };
+    private final MediaListeners mediaListeners = new MediaListeners(this);
 
     // Commands
 
@@ -108,12 +67,8 @@ public class MainContainerViewModel implements ViewModel {
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayer, selectedProgress);
     private final Command repeatAudioCommand = new RepeatAudioCommand(mediaPlayer, repeatStatus, repeatButtonText);
 
-    private final Command switchNextAudioCommand = new SwitchNextAudioCommand(
-            fileNamesList, media, mediaPlayer, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener
-    );
-    private final Command switchPrevAudioCommand = new SwitchPrevAudioCommand(
-            fileNamesList, media, mediaPlayer, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener
-    );
+    private final Command switchNextAudioCommand = mediaListeners.getSwitchNextAudioCommand();
+    private final Command switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
     // Constructor
 
@@ -125,9 +80,9 @@ public class MainContainerViewModel implements ViewModel {
         media.setValue(new Media(fileNamesList.getFirst()));
         mediaPlayer.setValue(new MediaPlayer(media.getValue()));
 
-        media.getValue().getMetadata().addListener(metaDataListenger);
-        mediaPlayer.getValue().currentTimeProperty().addListener(durationChangeListener);
-        mediaPlayer.getValue().setOnEndOfMedia(onEndMediaListener);
+        media.getValue().getMetadata().addListener(mediaListeners.getMetaDataListenger());
+        mediaPlayer.getValue().currentTimeProperty().addListener(mediaListeners.getDurationChangeListener());
+        mediaPlayer.getValue().setOnEndOfMedia(mediaListeners.getOnEndMediaListener());
     }
 
     // Methods (getters and setters)
@@ -160,6 +115,12 @@ public class MainContainerViewModel implements ViewModel {
 
     public Command getSwitchPrevAudioCommand() {
         return switchPrevAudioCommand;
+    }
+
+    // -> Fields //
+
+    public List<String> getFileNamesList() {
+        return fileNamesList;
     }
 
     // -> Properties //
@@ -216,4 +177,19 @@ public class MainContainerViewModel implements ViewModel {
         return sliderProgressUpdate;
     }
 
+    public Property<Media> getMediaProperty() {
+        return media;
+    }
+
+    public Property<MediaPlayer> getMediaPlayerProperty() {
+        return mediaPlayer;
+    }
+
+    public Property<Boolean> getRepeatStatusProperty() {
+        return repeatStatus;
+    }
+
+    public Property<Number> getSelectedAudioIndex() {
+        return selectedAudioIndex;
+    }
 }
