@@ -92,7 +92,7 @@ public class SwitchNextAudioCommand extends DelegateCommand {
     ) {
         super(() -> new Action() {
             @Override
-            protected void action() throws Exception {
+            protected void action() {
                 next(
                         fileNamesList, mediaProperty, mediaPlayerProperty, metaDataHash, playButtonTextProperty,
                         selectedVolume, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener

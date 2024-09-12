@@ -95,7 +95,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
                                         ) {
         super(() -> new Action() {
             @Override
-            protected void action() throws Exception {
+            protected void action() {
                 prev(
                         fileNamesList, mediaProperty, mediaPlayerProperty, metaDataHash, playButtonTextProperty,
                         selectedVolume, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener

@@ -4,17 +4,13 @@ import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
 import de.saxsys.mvvmfx.ViewModel;
-import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.image.Image;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.util.*;

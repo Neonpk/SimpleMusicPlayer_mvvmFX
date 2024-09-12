@@ -38,8 +38,7 @@ public class MediaListeners {
     private final Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
     private final HashMap<String, Object> metaDataHash = new HashMap<>();
 
-    private final MapChangeListener<String, Object> metaDataListenger = (MapChangeListener<String, Object>) ch -> {
-
+    private final MapChangeListener<String, Object> metaDataListenger = ch -> {
         if (ch.wasAdded()) {
             metaDataHash.put(String.valueOf(ch.getKey()), ch.getValueAdded());
 
@@ -52,7 +51,7 @@ public class MediaListeners {
         }
     };
 
-    private final ChangeListener<Duration> durationChangeListener = (observableValue, oldValue, newValue) -> {
+    private final ChangeListener<Duration> durationChangeListener = (_, _, newValue) -> {
 
         sliderProgressUpdate.setValue(true);
 
