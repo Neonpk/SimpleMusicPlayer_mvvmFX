@@ -1,5 +1,6 @@
 package com.musicplayer.app.commands.media_commands;
 
+import com.musicplayer.app.models.SwitchAudioCmdParam;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
@@ -15,10 +16,18 @@ import java.util.List;
 
 public class SwitchNextAudioCommand extends DelegateCommand {
 
-    private static void disposeOldMedia(Property<Media> mediaProperty,
-                                        Property<MediaPlayer> mediaPlayerProperty,
-                                        ChangeListener<Duration> durationChangeListener,
-                                        MapChangeListener<String, Object> metaDataListenger) {
+    private static int index = 0;
+
+    private static List<String> fileNamesList;
+    private static Property<Media> mediaProperty;
+    private static Property<MediaPlayer> mediaPlayerProperty;
+    private static HashMap<String, Object> metaDataHash;
+    private static Property<Number> selectedVolume;
+    private static ChangeListener<Duration> durationChangeListener;
+    private static MapChangeListener<String, Object> metaDataListenger;
+    private static Runnable onEndMediaListener;
+
+    private static void disposeOldMedia() {
 
         Media oldMedia = mediaProperty.getValue();
         MediaPlayer oldMediaPlayer = mediaPlayerProperty.getValue();
@@ -29,17 +38,10 @@ public class SwitchNextAudioCommand extends DelegateCommand {
         oldMediaPlayer.dispose();
     }
 
-    private static void setNewMedia(String filePath,
-                                    Property<Media> mediaProperty,
-                                    Property<MediaPlayer> mediaPlayerProperty,
-                                    HashMap<String, Object> metaDataHash,
-                                    Property<Number> selectedVolume,
-                                    ChangeListener<Duration> durationChangeListener,
-                                    MapChangeListener<String, Object> metaDataListenger,
-                                    Runnable onEndMediaListener) {
+    private static void setNewMedia() {
 
         metaDataHash.clear();
-        Media newMedia = new Media(filePath);
+        Media newMedia = new Media( fileNamesList.get( index ) );
         MediaPlayer newMediaPlayer = new MediaPlayer(newMedia);
         newMedia.getMetadata().addListener(metaDataListenger);
         newMediaPlayer.setVolume( selectedVolume.getValue().floatValue() / 100 );
@@ -49,29 +51,27 @@ public class SwitchNextAudioCommand extends DelegateCommand {
         mediaPlayerProperty.setValue(newMediaPlayer);
     }
 
-    private static void next(List<String> fileNamesList,
-                             Property<Media> mediaProperty,
-                             Property<MediaPlayer> mediaPlayerProperty,
-                             HashMap<String, Object> metaDataHash,
-                             StringProperty playButtonTextProperty,
-                             Property<Number> selectedVolume,
-                             Property<Number> selectedAudioIndex,
-                             ChangeListener<Duration> durationChangeListener,
-                             MapChangeListener<String, Object> metaDataListenger,
-                             Runnable onEndMediaListener
-                             ) {
+    private static void next(SwitchAudioCmdParam switchAudioCmdParam) {
+
+        fileNamesList = switchAudioCmdParam.getFileNamesList();
+        mediaProperty = switchAudioCmdParam.getMediaProperty();
+        mediaPlayerProperty = switchAudioCmdParam.getMediaPlayerProperty();
+        metaDataHash = switchAudioCmdParam.getMetaDataHash();
+        selectedVolume = switchAudioCmdParam.getSelectedVolumeProperty();
+        durationChangeListener = switchAudioCmdParam.getDurationChangeListener();
+        metaDataListenger = switchAudioCmdParam.getMetadataChangeListener();
+        onEndMediaListener = switchAudioCmdParam.getOnEndMediaListener();
+
+        Property<Number> selectedAudioIndex = switchAudioCmdParam.getSelectedAudioIndex();
+        StringProperty playButtonTextProperty = switchAudioCmdParam.getPlayButtonTextProperty();
 
         int count = fileNamesList.size();
-        int index = selectedAudioIndex.getValue().intValue();
+        index = selectedAudioIndex.getValue().intValue();
 
         index = (index + 1) % count;
-        String filePath = fileNamesList.get(index);
 
-        disposeOldMedia(mediaProperty, mediaPlayerProperty, durationChangeListener, metaDataListenger);
-        setNewMedia(
-                filePath, mediaProperty, mediaPlayerProperty, metaDataHash,
-                selectedVolume, durationChangeListener, metaDataListenger, onEndMediaListener
-        );
+        disposeOldMedia();
+        setNewMedia();
 
         playButtonTextProperty.setValue("||");
         mediaPlayerProperty.getValue().play();
@@ -79,24 +79,11 @@ public class SwitchNextAudioCommand extends DelegateCommand {
         selectedAudioIndex.setValue(index);
     }
 
-    public SwitchNextAudioCommand(List<String> fileNamesList,
-                                  Property<Media> mediaProperty,
-                                  Property<MediaPlayer> mediaPlayerProperty,
-                                  HashMap<String, Object> metaDataHash,
-                                  StringProperty playButtonTextProperty,
-                                  Property<Number> selectedVolume,
-                                  Property<Number> selectedAudioIndex,
-                                  ChangeListener<Duration> durationChangeListener,
-                                  MapChangeListener<String, Object> metaDataListenger,
-                                  Runnable onEndMediaListener
-    ) {
+    public SwitchNextAudioCommand(SwitchAudioCmdParam switchAudioCmdParam) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                next(
-                        fileNamesList, mediaProperty, mediaPlayerProperty, metaDataHash, playButtonTextProperty,
-                        selectedVolume, selectedAudioIndex, durationChangeListener, metaDataListenger, onEndMediaListener
-                );
+                next(switchAudioCmdParam);
             }
         });
     }

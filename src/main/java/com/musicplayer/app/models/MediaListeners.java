@@ -96,21 +96,18 @@ public class MediaListeners {
         this.repeatStatus = mainContainerViewModel.getRepeatStatusProperty();
 
         List<String> fileNamesList = mainContainerViewModel.getFileNamesList();
-        Property<Number> selectedVolume = mainContainerViewModel.getSelectedVolumeProperty();
-        Property<Number> selectedAudioIndex = mainContainerViewModel.getSelectedAudioIndex();
-        StringProperty playButtonText = mainContainerViewModel.getPlayButtonTextProperty();
+        StringProperty playButtonTextProperty = mainContainerViewModel.getPlayButtonTextProperty();
+        Property<Number> selectedVolumeProperty = mainContainerViewModel.getSelectedVolumeProperty();
+        Property<Number> selectedAudioIndexProperty = mainContainerViewModel.getSelectedAudioIndex();
 
-        this.switchNextAudioCommand = new SwitchNextAudioCommand(
+        SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(
                 fileNamesList, media, mediaPlayer, metaDataHash,
-                playButtonText, selectedVolume, selectedAudioIndex,
+                playButtonTextProperty, selectedVolumeProperty, selectedAudioIndexProperty,
                 durationChangeListener, metaDataListenger, onEndMediaListener
         );
 
-        this.switchPrevAudioCommand = new SwitchPrevAudioCommand(
-                fileNamesList, media, mediaPlayer, metaDataHash,
-                playButtonText, selectedVolume, selectedAudioIndex,
-                durationChangeListener, metaDataListenger, onEndMediaListener
-        );
+        this.switchNextAudioCommand = new SwitchNextAudioCommand(switchAudioCmdParam);
+        this.switchPrevAudioCommand = new SwitchPrevAudioCommand(switchAudioCmdParam);
 
     }
 
@@ -118,7 +115,7 @@ public class MediaListeners {
         return durationChangeListener;
     }
 
-    public MapChangeListener<String, Object> getMetaDataListenger() {
+    public MapChangeListener<String, Object> getMetaDataChangeListenger() {
         return metaDataListenger;
     }
 
@@ -133,4 +130,5 @@ public class MediaListeners {
     public Command getSwitchNextAudioCommand() {
         return switchNextAudioCommand;
     }
+
 }

@@ -12,10 +12,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.image.Image;
 
-import java.io.File;
 import java.util.*;
-
-//import java.util.PriorityQueue;
 
 public class MainContainerViewModel implements ViewModel {
 
@@ -69,16 +66,7 @@ public class MainContainerViewModel implements ViewModel {
     // Constructor
 
     public MainContainerViewModel() {
-
-        fileNamesList.add(new File("/home/chichard/Музыка/timberlake.mp3").toURI().toString());
-        fileNamesList.add(new File("/home/chichard/Музыка/lalala.mp3").toURI().toString());
-
-        media.setValue(new Media(fileNamesList.getFirst()));
-        mediaPlayer.setValue(new MediaPlayer(media.getValue()));
-
-        media.getValue().getMetadata().addListener(mediaListeners.getMetaDataListenger());
-        mediaPlayer.getValue().currentTimeProperty().addListener(mediaListeners.getDurationChangeListener());
-        mediaPlayer.getValue().setOnEndOfMedia(mediaListeners.getOnEndMediaListener());
+        new InitializeMediaCommand(fileNamesList, media, mediaPlayer, mediaListeners).execute();
     }
 
     // Methods (getters and setters)
@@ -104,6 +92,7 @@ public class MainContainerViewModel implements ViewModel {
     public Command getRepeatAudioCommand() {
         return repeatAudioCommand;
     }
+
 
     public Command getSwitchNextAudioCommand() {
         return switchNextAudioCommand;
