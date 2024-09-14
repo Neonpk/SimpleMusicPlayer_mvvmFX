@@ -8,9 +8,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class SwitchAudioCmdParam {
 
     private final List<String> fileNamesList;
@@ -18,10 +21,10 @@ public class SwitchAudioCmdParam {
     private final Property<MediaPlayer> mediaPlayerProperty;
     private final HashMap<String, Object> metaDataHash;
     private final StringProperty playButtonTextProperty;
-    private final Property<Number> selectedVolume;
+    private final Property<Number> selectedVolumeProperty;
     private final Property<Number> selectedAudioIndex;
     private final ChangeListener<Duration> durationChangeListener;
-    private final MapChangeListener<String, Object> metaDataListenger;
+    private final MapChangeListener<String, Object> metaDataChangeListenger;
     private final Runnable onEndMediaListener;
 
     public SwitchAudioCmdParam(List<String> fileNamesList,
@@ -40,51 +43,11 @@ public class SwitchAudioCmdParam {
         this.mediaPlayerProperty = mediaPlayerProperty;
         this.metaDataHash = metaDataHash;
         this.playButtonTextProperty = playButtonTextProperty;
-        this.selectedVolume = selectedVolume;
+        this.selectedVolumeProperty = selectedVolume;
         this.selectedAudioIndex = selectedAudioIndex;
         this.durationChangeListener = durationChangeListener;
-        this.metaDataListenger = metaDataListenger;
+        this.metaDataChangeListenger = metaDataListenger;
         this.onEndMediaListener = onEndMediaListener;
-    }
-
-    public List<String> getFileNamesList() {
-        return fileNamesList;
-    }
-
-    public HashMap<String, Object> getMetaDataHash() {
-        return metaDataHash;
-    }
-
-    public ChangeListener<Duration> getDurationChangeListener() {
-        return durationChangeListener;
-    }
-
-    public MapChangeListener<String, Object> getMetadataChangeListener() {
-        return metaDataListenger;
-    }
-
-    public Runnable getOnEndMediaListener() {
-        return onEndMediaListener;
-    }
-
-    public Property<Number> getSelectedVolumeProperty() {
-        return selectedVolume;
-    }
-
-    public StringProperty getPlayButtonTextProperty() {
-        return playButtonTextProperty;
-    }
-
-    public Property<Media> getMediaProperty() {
-        return mediaProperty;
-    }
-
-    public Property<MediaPlayer> getMediaPlayerProperty() {
-        return mediaPlayerProperty;
-    }
-
-    public Property<Number> getSelectedAudioIndex() {
-        return selectedAudioIndex;
     }
 
 }

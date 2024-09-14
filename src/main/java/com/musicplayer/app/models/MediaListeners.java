@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 import javafx.util.Duration;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,18 +33,21 @@ public class MediaListeners {
     private Property<Number> selectedProgress;
     private final Property<Boolean> repeatStatus;
 
+    @Getter
     private final Command switchNextAudioCommand;
+    @Getter
     private final Command switchPrevAudioCommand;
 
     private final Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
     private final HashMap<String, Object> metaDataHash = new HashMap<>();
 
-    private final MapChangeListener<String, Object> metaDataListenger = ch -> {
+    @Getter
+    private final MapChangeListener<String, Object> metaDataChangeListenger = ch -> {
         if (ch.wasAdded()) {
             metaDataHash.put(String.valueOf(ch.getKey()), ch.getValueAdded());
 
-            artistText.setValue( metaDataHash.getOrDefault("artist", "Unknown artist").toString() );
-            titleText.setValue( metaDataHash.getOrDefault("title", "Unknown title").toString() );
+            artistText.setValue( metaDataHash.getOrDefault("artist", "Неизвестный артист").toString() );
+            titleText.setValue( metaDataHash.getOrDefault("title", "Неизвестный заголовок").toString() );
             imageCover.setValue( (Image) metaDataHash.getOrDefault("image", defaultCover ) );
 
             if(ch.getKey().equals("raw metadata"))
@@ -51,6 +55,7 @@ public class MediaListeners {
         }
     };
 
+    @Getter
     private final ChangeListener<Duration> durationChangeListener = (_, _, newValue) -> {
 
         sliderProgressUpdate.setValue(true);
@@ -73,6 +78,7 @@ public class MediaListeners {
 
     };
 
+    @Getter
     private final Runnable onEndMediaListener = new Runnable() {
         @Override
         public void run() {
@@ -90,45 +96,25 @@ public class MediaListeners {
         this.media = mainContainerViewModel.getMediaProperty();
         this.mediaPlayer = mainContainerViewModel.getMediaPlayerProperty();
         this.sliderProgressUpdate = mainContainerViewModel.getSliderProgressUpdateProperty();
-        this.timePositionText = mainContainerViewModel.getTimePositionProperty();
-        this.timeDurationText = mainContainerViewModel.getTimeDurationProperty();
+        this.timePositionText = mainContainerViewModel.getTimePositionTextProperty();
+        this.timeDurationText = mainContainerViewModel.getTimeDurationTextProperty();
         this.selectedProgress = mainContainerViewModel.getSelectedProgressProperty();
         this.repeatStatus = mainContainerViewModel.getRepeatStatusProperty();
 
         List<String> fileNamesList = mainContainerViewModel.getFileNamesList();
         StringProperty playButtonTextProperty = mainContainerViewModel.getPlayButtonTextProperty();
         Property<Number> selectedVolumeProperty = mainContainerViewModel.getSelectedVolumeProperty();
-        Property<Number> selectedAudioIndexProperty = mainContainerViewModel.getSelectedAudioIndex();
+        Property<Number> selectedAudioIndexProperty = mainContainerViewModel.getSelectedAudioIndexProperty();
 
         SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(
                 fileNamesList, media, mediaPlayer, metaDataHash,
                 playButtonTextProperty, selectedVolumeProperty, selectedAudioIndexProperty,
-                durationChangeListener, metaDataListenger, onEndMediaListener
+                durationChangeListener, metaDataChangeListenger, onEndMediaListener
         );
 
         this.switchNextAudioCommand = new SwitchNextAudioCommand(switchAudioCmdParam);
         this.switchPrevAudioCommand = new SwitchPrevAudioCommand(switchAudioCmdParam);
 
-    }
-
-    public ChangeListener<Duration> getDurationChangeListener() {
-        return durationChangeListener;
-    }
-
-    public MapChangeListener<String, Object> getMetaDataChangeListenger() {
-        return metaDataListenger;
-    }
-
-    public Runnable getOnEndMediaListener() {
-        return onEndMediaListener;
-    }
-
-    public Command getSwitchPrevAudioCommand() {
-        return switchPrevAudioCommand;
-    }
-
-    public Command getSwitchNextAudioCommand() {
-        return switchNextAudioCommand;
     }
 
 }

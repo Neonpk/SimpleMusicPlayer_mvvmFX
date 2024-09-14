@@ -12,7 +12,7 @@ public class RepeatAudioCommand extends DelegateCommand {
 
         isRepeat.setValue(!isRepeat.getValue());
 
-        repeatButtonText.setValue(isRepeat.getValue() ? "UnRepeat" : "Repeat");
+        repeatButtonText.setValue(isRepeat.getValue() ? "Не повторять" : "Повторять");
         mediaPlayer.setCycleCount(isRepeat.getValue() ? MediaPlayer.INDEFINITE : 0);
     }
 

@@ -1,14 +1,12 @@
 package com.musicplayer.app.views;
 
+import com.musicplayer.app.models.Playlist;
 import com.musicplayer.app.viewmodels.MainContainerViewModel;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
@@ -24,7 +22,7 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     // Inject Controls
 
     @FXML
-    private ListView<String> listViewPlaylist;
+    private ListView<Playlist> listViewPlaylist;
 
     @FXML
     private Button playButton;
@@ -70,13 +68,15 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
 
         // Bindings
 
-        listViewPlaylist.setItems( viewModel.getPlaylistProperty() );
+        listViewPlaylist.setItems( viewModel.getPlaylist() );
+
+        listViewPlaylist.contextMenuProperty().bindBidirectional( viewModel.getContextMenuProperty() );
 
         sliderVolume.valueProperty().bindBidirectional( viewModel.getSelectedVolumeProperty() );
         sliderProgress.valueProperty().bindBidirectional( viewModel.getSelectedProgressProperty() );
 
-        labelTimePosition.textProperty().bindBidirectional( viewModel.getTimePositionProperty() );
-        labelDuration.textProperty().bindBidirectional( viewModel.getTimeDurationProperty() );
+        labelTimePosition.textProperty().bindBidirectional( viewModel.getTimePositionTextProperty() );
+        labelDuration.textProperty().bindBidirectional( viewModel.getTimeDurationTextProperty() );
 
         labelArtist.textProperty().bindBidirectional( viewModel.getArtistTextProperty() );
         labelTitle.textProperty().bindBidirectional( viewModel.getTitleTextProperty() );

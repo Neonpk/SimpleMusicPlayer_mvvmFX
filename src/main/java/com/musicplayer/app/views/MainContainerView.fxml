@@ -10,18 +10,21 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
 <BorderPane id="borderPaneMain" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.musicplayer.app.views.MainContainerView">
 
     <left>
-        <BorderPane minWidth="250" style="-fx-background-color: #000000; -fx-padding: 10 10 10 10;" BorderPane.alignment="CENTER_LEFT">
+        <BorderPane minWidth="250" style="-fx-background-color: #000000; -fx-padding: 10;" BorderPane.alignment="CENTER_LEFT">
 
             <center>
                 <BorderPane minWidth="150" style="-fx-background-color: #121212; -fx-background-radius: 20;" BorderPane.alignment="CENTER">
                     <center>
                         <VBox alignment="TOP_CENTER" style="-fx-padding: 10;">
                             <Label text="Плейлисты"/>
-                            <ListView style="-fx-background-color: #121212;" fx:id="listViewPlaylist" />
+                            <Separator styleClass="separator" />
+                            <Button text="Создать плейлист" styleClass="createPlaylistButton" />
+                            <ListView style="-fx-background-color: #121212; -fx-padding: 10 0 0 0;" fx:id="listViewPlaylist" />
                         </VBox>
                     </center>
                 </BorderPane>
@@ -53,9 +56,9 @@
                     <ImageView fitHeight="80" fitWidth="80" style="-fx-background-radius: 20;" fx:id="imageViewCover" />
 
                     <VBox alignment="CENTER_LEFT">
-                        <Label text="Artist" fx:id="labelArtist"/>
-                        <Label text="Title" fx:id="labelTitle" />
-                        <Label text="FileName" fx:id="labelFileName" />
+                        <Label text="Артист" fx:id="labelArtist"/>
+                        <Label text="Трек" fx:id="labelTitle" />
+                        <Label text="Путь" fx:id="labelFileName" />
                     </VBox>
 
                 </FlowPane>
@@ -70,16 +73,16 @@
                             <Insets bottom="10"/>
                         </padding>
 
-                        <Button text="prev" fx:id="prevButton" />
+                        <Button text="Пред." fx:id="prevButton" />
                         <Button fx:id="playButton"/>
-                        <Button text="next" fx:id="nextButton" />
-                        <Button text="repeat" fx:id="repeatButton"/>
+                        <Button text="След." fx:id="nextButton" />
+                        <Button text="Повторять" fx:id="repeatButton"/>
                     </FlowPane>
 
                     <FlowPane hgap="10" alignment="CENTER">
                         <Label text="00:00:00" fx:id="labelTimePosition"/>
                         <Slider minWidth="250" prefWidth="420" fx:id="sliderProgress"/>
-                        <Label text="01:00:00" fx:id="labelDuration"/>
+                        <Label text="00:00:00" fx:id="labelDuration"/>
                     </FlowPane>
 
                 </VBox>

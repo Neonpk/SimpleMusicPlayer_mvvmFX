@@ -59,7 +59,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
         metaDataHash = switchAudioCmdParam.getMetaDataHash();
         selectedVolume = switchAudioCmdParam.getSelectedVolumeProperty();
         durationChangeListener = switchAudioCmdParam.getDurationChangeListener();
-        metaDataListenger = switchAudioCmdParam.getMetadataChangeListener();
+        metaDataListenger = switchAudioCmdParam.getMetaDataChangeListenger();
         onEndMediaListener = switchAudioCmdParam.getOnEndMediaListener();
 
         Property<Number> selectedAudioIndex = switchAudioCmdParam.getSelectedAudioIndex();

@@ -12,7 +12,7 @@ public class MuteAudioCommand extends DelegateCommand {
 
         boolean isMuted = mediaPlayer.isMute();
 
-        muteButtonText.setValue(!isMuted ? "UnMute" : "Mute");
+        muteButtonText.setValue(!isMuted ? "Вкл звук" : "Выкл звук");
         mediaPlayer.setMute(!isMuted);
     }
 
