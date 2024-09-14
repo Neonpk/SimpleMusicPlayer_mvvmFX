@@ -1,0 +1,17 @@
+.separator {
+    -fx-padding: 10;
+}
+
+.separator .line {
+    -fx-background-color: red;
+    -fx-pref-height: 2;
+    -fx-border-color: null ;
+    -fx-padding: 10;
+}
+
+.createPlaylistButton {
+}
+
+Label {
+    -fx-text-fill: #a8b7bf;
+}
