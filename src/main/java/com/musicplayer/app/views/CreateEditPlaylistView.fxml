@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.musicplayer.app.views.CreateEditPlaylistView"
+      alignment="CENTER">
+
+    <TextField promptText="Введите название плейлиста" fx:id="textFieldPlaylistName" maxWidth="500"/>
+
+    <Button text="Сохранить" fx:id="savePlaylistButton">
+        <VBox.margin>
+            <Insets top="10"/>
+        </VBox.margin>
+    </Button>
+
+
+</VBox>

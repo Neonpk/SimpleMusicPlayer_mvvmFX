@@ -12,6 +12,11 @@
 .createPlaylistButton {
 }
 
+.listViewPlaylists {
+    -fx-background-color: #121212;
+    -fx-padding: 10 0 0 0;
+}
+
 Label {
     -fx-text-fill: #a8b7bf;
 }

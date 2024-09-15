@@ -1,14 +1,18 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.AppStarter;
+import com.musicplayer.app.commands.listview_commands.CreatePlaylistCommand;
+import com.musicplayer.app.commands.listview_commands.SelectedPlaylistCommand;
 import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
 import com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.models.PlaylistJsonSerializer;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.media.Media;
@@ -76,13 +80,19 @@ public class MainContainerViewModel implements ViewModel {
     @Getter
     private final Property<ContextMenu> contextMenuProperty = new SimpleObjectProperty<>();
 
+    @Getter
+    private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
+
+    @Getter
+    private final Property<Node> selectedView = new SimpleObjectProperty<>();
+
     // Fields
 
     @Getter
-    private final List<String> fileNamesList = new ArrayList<>();
+    private final ObservableList<Playlist> playlist = FXCollections.observableArrayList();
 
     @Getter
-    private final ObservableList<Playlist> playlist = FXCollections.observableArrayList();
+    private final List<String> fileNamesList = new ArrayList<>();
 
     // Fields => Listeners
 
@@ -106,6 +116,12 @@ public class MainContainerViewModel implements ViewModel {
     @Getter
     private final Command switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
+    @Getter
+    final Command selectedPlaylistCommand = new SelectedPlaylistCommand(selectedPlaylistProperty, selectedView);
+
+    @Getter
+    private final Command playlistCreateCommand = new CreatePlaylistCommand(selectedView);
+
     // Constructor
 
     public MainContainerViewModel() throws IOException {
@@ -120,7 +136,7 @@ public class MainContainerViewModel implements ViewModel {
 
         contextMenuProperty.setValue(cm);
 
-        //List<Playlist> playlists = new PlaylistJsonDeserializer("/home/chichard/Desktop/playlist.json").Deserialize();
+        //playlist.addAll(new PlaylistJsonSerializer("/home/chichard/Desktop/playlist.json").Deserialize());
 
         new InitializeMediaCommand(fileNamesList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.musicplayer.app.views.PlaylistView">
+
+    <padding>
+        <Insets right="20" left="20" top="20" bottom="20"/>
+    </padding>
+
+    <top>
+        <BorderPane BorderPane.alignment="CENTER">
+
+            <center>
+                <Label text="Плейлист #1" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets bottom="20" />
+                    </padding>
+                </Label>
+            </center>
+
+            <right>
+                <Button text="Добавить треки"/>
+            </right>
+
+            <bottom>
+                <TextField promptText="Введите поисковый запрос..."/>
+            </bottom>
+
+        </BorderPane>
+    </top>
+
+    <center>
+        <ListView fx:id="selectedPlaylist">
+            <BorderPane.margin>
+                <Insets top="10" />
+            </BorderPane.margin>
+        </ListView>
+    </center>
+
+</BorderPane>

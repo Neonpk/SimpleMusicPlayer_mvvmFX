@@ -6,6 +6,7 @@ module com.musicplayer.app {
     requires javafx.media;
     requires com.fasterxml.jackson.databind;
     requires static lombok;
+    requires java.desktop;
 
     opens com.musicplayer.app to de.saxsys.mvvmfx, javafx.fxml;
     opens com.musicplayer.app.views to de.saxsys.mvvmfx, javafx.fxml;

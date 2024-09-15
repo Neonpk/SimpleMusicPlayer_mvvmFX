@@ -2,12 +2,12 @@ package com.musicplayer.app.views;
 
 import com.musicplayer.app.models.Playlist;
 import com.musicplayer.app.viewmodels.MainContainerViewModel;
-import de.saxsys.mvvmfx.FxmlView;
-import de.saxsys.mvvmfx.InjectViewModel;
+import de.saxsys.mvvmfx.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,10 +19,16 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
     @InjectViewModel
     private MainContainerViewModel viewModel;
 
+    @FXML
+    private BorderPane contentPresenter;
+
     // Inject Controls
 
     @FXML
     private ListView<Playlist> listViewPlaylist;
+
+    @FXML
+    private Button createPlaylistButton;
 
     @FXML
     private Button playButton;
@@ -69,7 +75,6 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
         // Bindings
 
         listViewPlaylist.setItems( viewModel.getPlaylist() );
-
         listViewPlaylist.contextMenuProperty().bindBidirectional( viewModel.getContextMenuProperty() );
 
         sliderVolume.valueProperty().bindBidirectional( viewModel.getSelectedVolumeProperty() );
@@ -90,6 +95,8 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
 
         imageViewCover.imageProperty().bindBidirectional( viewModel.getImageCoverProperty() );
 
+        contentPresenter.centerProperty().bindBidirectional( viewModel.getSelectedView() );
+
         // Events
 
         sliderProgress.valueProperty().addListener( (_) -> {
@@ -99,10 +106,16 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
 
         sliderVolume.valueProperty().addListener( (_) -> viewModel.getVolumeControlCommand().execute() );
 
+        listViewPlaylist.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
+            viewModel.getSelectedPlaylistProperty().setValue(newVal);
+            viewModel.getSelectedPlaylistCommand().execute();
+        });
+
         playButton.setOnAction( (_) -> viewModel.getPlayPauseCommand().execute() );
         muteButton.setOnAction( (_) -> viewModel.getMuteAudioCommand().execute() );
         repeatButton.setOnAction( (_) -> viewModel.getRepeatAudioCommand().execute() );
         nextButton.setOnAction((_) -> viewModel.getSwitchNextAudioCommand().execute() );
         prevButton.setOnAction((_) -> viewModel.getSwitchPrevAudioCommand().execute() );
+        createPlaylistButton.setOnAction((_) -> viewModel.getPlaylistCreateCommand().execute() );
     }
 }
