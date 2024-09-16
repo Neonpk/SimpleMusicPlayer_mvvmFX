@@ -3,19 +3,16 @@ package com.musicplayer.app.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musicplayer.app.models.Playlist;
 import com.musicplayer.app.models.PlaylistJsonDeserializer;
+import lombok.AllArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 public class PlaylistJsonProvider {
 
     private final PlaylistJsonDeserializer playlistJsonDeserializerFactory;
-
-    public PlaylistJsonProvider(PlaylistJsonDeserializer playlistJsonDeserializerFactory) {
-        this.playlistJsonDeserializerFactory = playlistJsonDeserializerFactory;
-    }
 
     public List<Playlist> Deserialize() throws IOException {
         return playlistJsonDeserializerFactory.Deserialize();

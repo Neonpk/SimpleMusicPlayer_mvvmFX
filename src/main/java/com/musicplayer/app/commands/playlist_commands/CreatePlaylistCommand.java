@@ -21,7 +21,7 @@ public class CreatePlaylistCommand extends DelegateCommand {
     public CreatePlaylistCommand(VmProvider vmProvider, Property<Node> selectedView) {
         super(() -> new Action() {
             @Override
-            protected void action() throws Exception {
+            protected void action() {
                 createPlaylist(vmProvider, selectedView);
             }
         });

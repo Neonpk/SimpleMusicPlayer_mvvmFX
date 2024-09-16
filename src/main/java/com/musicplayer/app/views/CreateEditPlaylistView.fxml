@@ -7,15 +7,25 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.musicplayer.app.views.CreateEditPlaylistView"
-      alignment="CENTER">
+      alignment="CENTER" maxWidth="350">
 
-    <TextField promptText="Введите название плейлиста" fx:id="textFieldPlaylistName" maxWidth="500"/>
+    <TextField promptText="Введите название плейлиста" fx:id="textFieldPlaylistName" />
 
-    <Button text="Сохранить" fx:id="savePlaylistButton">
+    <FlowPane alignment="CENTER_LEFT">
+
         <VBox.margin>
             <Insets top="10"/>
         </VBox.margin>
-    </Button>
+
+        <Button text="Сохранить" fx:id="savePlaylistButton"/>
+
+        <Label fx:id="labelStatusMessage" style="-fx-text-fill: red;">
+            <padding>
+                <Insets left="10" />
+            </padding>
+        </Label>
+
+    </FlowPane>
 
 
 </VBox>

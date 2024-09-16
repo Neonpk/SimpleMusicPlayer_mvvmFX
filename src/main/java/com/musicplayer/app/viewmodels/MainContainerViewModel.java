@@ -126,8 +126,10 @@ public class MainContainerViewModel implements ViewModel {
     @Getter
     private final Command playlistCreateCommand;
 
-
+    @Getter
     private final Command playlistEditCommand;
+
+    @Getter
     private final Command deletePlaylistCommand;
 
     // Constructor
@@ -143,20 +145,7 @@ public class MainContainerViewModel implements ViewModel {
 
         playlistCreateCommand = new CreatePlaylistCommand(vmProvider, selectedView);
         playlistEditCommand = new EditPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
-        deletePlaylistCommand = new DeletePlaylistCommand(playlistJsonProvider, playlistsProvider, selectedPlaylistProperty);
-
-        var cm = new ContextMenu();
-
-        var mi1 = new MenuItem("Изменить название");
-        var mi2 = new MenuItem("Удалить плейлист");
-
-        cm.getItems().add(mi1);
-        cm.getItems().add(mi2);
-
-        contextMenuProperty.setValue(cm);
-
-        mi1.setOnAction( (_) -> playlistEditCommand.execute() );
-        mi2.setOnAction( (_) -> deletePlaylistCommand.execute() );
+        deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());
 

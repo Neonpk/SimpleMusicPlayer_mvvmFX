@@ -6,6 +6,7 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -22,9 +23,13 @@ public class CreateEditPlaylistView implements FxmlView<CreateEditPlaylistViewMo
     @FXML
     private Button savePlaylistButton;
 
+    @FXML
+    private Label labelStatusMessage;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         textFieldPlaylistName.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );
+        labelStatusMessage.textProperty().bindBidirectional( viewModel.getStatusTextProperty() );
         savePlaylistButton.setOnAction( (_) -> viewModel.getSavePlaylistCommand().execute()  );
     }
 
