@@ -1,5 +1,6 @@
 package com.musicplayer.app.commands.playlist_commands;
 
+import com.musicplayer.app.models.Playlist;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
 import com.musicplayer.app.views.CreateEditPlaylistView;
@@ -9,22 +10,20 @@ import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 
-public class CreatePlaylistCommand extends DelegateCommand {
+public class EditPlaylistCommand extends DelegateCommand {
 
-    private static void createPlaylist(VmProvider createPlaylistVmProvider, Property<Node> selectedView) {
-
-        CreateEditPlaylistViewModel viewModelInstance = new CreateEditPlaylistViewModel( createPlaylistVmProvider );
+    private static void editPlaylist(VmProvider vmProvider, Property<Playlist> selectedPlaylist, Property<Node> selectedView) {
+        CreateEditPlaylistViewModel viewModelInstance = new CreateEditPlaylistViewModel( vmProvider, selectedPlaylist );
         var viewTuple = FluentViewLoader.fxmlView(CreateEditPlaylistView.class).viewModel(viewModelInstance);
         selectedView.setValue( viewTuple.load().getView() );
     }
 
-    public CreatePlaylistCommand(VmProvider vmProvider, Property<Node> selectedView) {
+    public EditPlaylistCommand(VmProvider vmProvider, Property<Playlist> selectedPlaylist, Property<Node> selectedView) {
         super(() -> new Action() {
             @Override
             protected void action() throws Exception {
-                createPlaylist(vmProvider, selectedView);
+                editPlaylist(vmProvider, selectedPlaylist, selectedView);
             }
         });
     }
-
 }

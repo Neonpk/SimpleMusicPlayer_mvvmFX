@@ -4,6 +4,7 @@ import com.musicplayer.app.models.PlaylistJsonDeserializer;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
 import com.musicplayer.app.viewmodels.MainContainerViewModel;
 import com.musicplayer.app.views.MainContainerView;
@@ -33,15 +34,11 @@ public class AppStarter extends MvvmfxEasyDIApplication {
         context.bindInstance(NavigationService.class, new NavigationService( new SimpleObjectProperty<>() ));
 
         context.bindInstance(MainContainerViewModel.class, new MainContainerViewModel(
-                context.getInstance(PlaylistJsonProvider.class),
-                context.getInstance(PlaylistsProvider.class),
-                context.getInstance(NavigationService.class) )
-        );
-
-        context.bindInstance(CreateEditPlaylistViewModel.class, new CreateEditPlaylistViewModel(
-                context.getInstance(PlaylistJsonProvider.class),
-                context.getInstance(PlaylistsProvider.class),
-                context.getInstance(NavigationService.class)
+                new VmProvider(
+                        context.getInstance(PlaylistJsonProvider.class),
+                        context.getInstance(PlaylistsProvider.class),
+                        context.getInstance(NavigationService.class)
+                )
         ));
 
         // ViewModels

@@ -21,6 +21,12 @@ public class PlaylistJsonProvider {
         return playlistJsonDeserializerFactory.Deserialize();
     }
 
+    public void replacePlaylist(int id, Playlist playlist) throws IOException {
+        List<Playlist> playlists = this.Deserialize();
+        playlists.set( id, playlist );
+        new ObjectMapper().writeValue(new File(playlistJsonDeserializerFactory.getFileName()), playlists);
+    }
+
     public void addPlaylist(Playlist playlist) throws IOException {
         List<Playlist> playlists = this.Deserialize();
         playlists.add( playlist );

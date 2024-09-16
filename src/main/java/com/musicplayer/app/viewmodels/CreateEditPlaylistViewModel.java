@@ -1,11 +1,11 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.commands.playlist_commands.SavePlaylistCommand;
-import com.musicplayer.app.services.NavigationService;
-import com.musicplayer.app.services.PlaylistJsonProvider;
-import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.services.VmProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
@@ -17,10 +17,14 @@ public class CreateEditPlaylistViewModel implements ViewModel {
 
     private final Command savePlaylistCommand;
 
-    public CreateEditPlaylistViewModel(PlaylistJsonProvider jsonProvider,
-                                       PlaylistsProvider playlistsProvider,
-                                       NavigationService navService) {
-        savePlaylistCommand = new SavePlaylistCommand(playlistNameProperty, jsonProvider, playlistsProvider, navService);
+    public CreateEditPlaylistViewModel(VmProvider vmProvider) {
+
+        savePlaylistCommand = new SavePlaylistCommand(vmProvider, playlistNameProperty);
+    }
+
+    public CreateEditPlaylistViewModel(VmProvider vmProvider, Property<Playlist> selectedPlaylist) {
+
+        savePlaylistCommand = new SavePlaylistCommand(vmProvider, playlistNameProperty, selectedPlaylist);
     }
 
 }

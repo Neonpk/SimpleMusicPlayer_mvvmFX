@@ -3,18 +3,18 @@ package com.musicplayer.app.viewmodels;
 import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.playlist_commands.CreatePlaylistCommand;
 import com.musicplayer.app.commands.playlist_commands.DeletePlaylistCommand;
+import com.musicplayer.app.commands.playlist_commands.EditPlaylistCommand;
 import com.musicplayer.app.commands.playlist_commands.SelectedPlaylistCommand;
 import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
 import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.models.PlaylistJsonDeserializer;
+import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.services.PlaylistsProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -124,19 +124,25 @@ public class MainContainerViewModel implements ViewModel {
     private final Command selectedPlaylistCommand = new SelectedPlaylistCommand(selectedPlaylistProperty, selectedView);
 
     @Getter
-    private final Command playlistCreateCommand = new CreatePlaylistCommand(selectedView);
+    private final Command playlistCreateCommand;
 
-    private Command deletePlaylistCommand;
+
+    private final Command playlistEditCommand;
+    private final Command deletePlaylistCommand;
 
     // Constructor
 
-    public MainContainerViewModel(PlaylistJsonProvider playlistJsonProvider,
-                                  PlaylistsProvider playlistsProvider,
-                                  NavigationService navigationService) throws IOException {
+    public MainContainerViewModel(VmProvider vmProvider) throws IOException {
+
+        PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
+        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
+        NavigationService navigationService = vmProvider.getNavigationService();
 
         playlists = playlistsProvider.getPlaylists();
         navigationService.bindBidirectional(selectedView);
 
+        playlistCreateCommand = new CreatePlaylistCommand(vmProvider, selectedView);
+        playlistEditCommand = new EditPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
         deletePlaylistCommand = new DeletePlaylistCommand(playlistJsonProvider, playlistsProvider, selectedPlaylistProperty);
 
         var cm = new ContextMenu();
@@ -149,6 +155,7 @@ public class MainContainerViewModel implements ViewModel {
 
         contextMenuProperty.setValue(cm);
 
+        mi1.setOnAction( (_) -> playlistEditCommand.execute() );
         mi2.setOnAction( (_) -> deletePlaylistCommand.execute() );
 
         playlists.addAll(playlistJsonProvider.Deserialize());
