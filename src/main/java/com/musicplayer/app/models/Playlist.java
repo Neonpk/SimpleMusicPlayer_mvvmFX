@@ -1,5 +1,6 @@
 package com.musicplayer.app.models;
 import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

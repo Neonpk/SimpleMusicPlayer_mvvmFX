@@ -1,6 +1,5 @@
-package com.musicplayer.app.commands.listview_commands;
+package com.musicplayer.app.commands.playlist_commands;
 
-import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
 import com.musicplayer.app.views.CreateEditPlaylistView;
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.utils.commands.Action;
@@ -11,7 +10,6 @@ import javafx.scene.Node;
 public class CreatePlaylistCommand extends DelegateCommand {
 
     private static void createPlaylist(Property<Node> selectedView) {
-
         var viewTuple = FluentViewLoader.fxmlView(CreateEditPlaylistView.class);
         selectedView.setValue( viewTuple.load().getView() );
     }

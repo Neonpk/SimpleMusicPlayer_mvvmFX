@@ -1,7 +1,6 @@
-package com.musicplayer.app.commands.listview_commands;
+package com.musicplayer.app.commands.playlist_commands;
 
 import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.views.CreateEditPlaylistView;
 import com.musicplayer.app.views.PlaylistView;
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.utils.commands.Action;

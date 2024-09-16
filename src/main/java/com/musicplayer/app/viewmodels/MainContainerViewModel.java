@@ -1,12 +1,16 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.AppStarter;
-import com.musicplayer.app.commands.listview_commands.CreatePlaylistCommand;
-import com.musicplayer.app.commands.listview_commands.SelectedPlaylistCommand;
+import com.musicplayer.app.commands.playlist_commands.CreatePlaylistCommand;
+import com.musicplayer.app.commands.playlist_commands.DeletePlaylistCommand;
+import com.musicplayer.app.commands.playlist_commands.SelectedPlaylistCommand;
 import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
 import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.models.PlaylistJsonSerializer;
+import com.musicplayer.app.models.PlaylistJsonDeserializer;
+import com.musicplayer.app.services.NavigationService;
+import com.musicplayer.app.services.PlaylistJsonProvider;
+import com.musicplayer.app.services.PlaylistsProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
@@ -89,7 +93,7 @@ public class MainContainerViewModel implements ViewModel {
     // Fields
 
     @Getter
-    private final ObservableList<Playlist> playlist = FXCollections.observableArrayList();
+    private final ObservableList<Playlist> playlists;
 
     @Getter
     private final List<String> fileNamesList = new ArrayList<>();
@@ -117,14 +121,23 @@ public class MainContainerViewModel implements ViewModel {
     private final Command switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
     @Getter
-    final Command selectedPlaylistCommand = new SelectedPlaylistCommand(selectedPlaylistProperty, selectedView);
+    private final Command selectedPlaylistCommand = new SelectedPlaylistCommand(selectedPlaylistProperty, selectedView);
 
     @Getter
     private final Command playlistCreateCommand = new CreatePlaylistCommand(selectedView);
 
+    private Command deletePlaylistCommand;
+
     // Constructor
 
-    public MainContainerViewModel() throws IOException {
+    public MainContainerViewModel(PlaylistJsonProvider playlistJsonProvider,
+                                  PlaylistsProvider playlistsProvider,
+                                  NavigationService navigationService) throws IOException {
+
+        playlists = playlistsProvider.getPlaylists();
+        navigationService.bindBidirectional(selectedView);
+
+        deletePlaylistCommand = new DeletePlaylistCommand(playlistJsonProvider, playlistsProvider, selectedPlaylistProperty);
 
         var cm = new ContextMenu();
 
@@ -136,7 +149,9 @@ public class MainContainerViewModel implements ViewModel {
 
         contextMenuProperty.setValue(cm);
 
-        //playlist.addAll(new PlaylistJsonSerializer("/home/chichard/Desktop/playlist.json").Deserialize());
+        mi2.setOnAction( (_) -> deletePlaylistCommand.execute() );
+
+        playlists.addAll(playlistJsonProvider.Deserialize());
 
         new InitializeMediaCommand(fileNamesList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }

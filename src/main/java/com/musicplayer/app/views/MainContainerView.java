@@ -74,7 +74,7 @@ public class MainContainerView implements FxmlView<MainContainerViewModel>, Init
 
         // Bindings
 
-        listViewPlaylist.setItems( viewModel.getPlaylist() );
+        listViewPlaylist.setItems( viewModel.getPlaylists() );
         listViewPlaylist.contextMenuProperty().bindBidirectional( viewModel.getContextMenuProperty() );
 
         sliderVolume.valueProperty().bindBidirectional( viewModel.getSelectedVolumeProperty() );
