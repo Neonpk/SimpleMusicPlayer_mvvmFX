@@ -1,6 +1,6 @@
 package com.musicplayer.app.commands.media_commands;
 
-import com.musicplayer.app.models.SwitchAudioCmdParam;
+import com.musicplayer.app.models.CommandParams.SwitchAudioCmdParam;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;

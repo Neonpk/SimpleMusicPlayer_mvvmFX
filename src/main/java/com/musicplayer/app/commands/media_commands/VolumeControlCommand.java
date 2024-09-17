@@ -1,6 +1,5 @@
 package com.musicplayer.app.commands.media_commands;
 
-import com.musicplayer.app.viewmodels.MainContainerViewModel;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;

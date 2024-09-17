@@ -1,8 +1,8 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.commands.playlist_commands.SavePlaylistCommand;
-import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.models.SavePlaylistCmdParam;
+import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.models.CommandParams.SavePlaylistCmdParam;
 import com.musicplayer.app.services.VmProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;

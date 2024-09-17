@@ -3,7 +3,8 @@ package com.musicplayer.app.models;
 import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.SwitchNextAudioCommand;
 import com.musicplayer.app.commands.media_commands.SwitchPrevAudioCommand;
-import com.musicplayer.app.viewmodels.MainContainerViewModel;
+import com.musicplayer.app.models.CommandParams.SwitchAudioCmdParam;
+import com.musicplayer.app.viewmodels.MainViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
@@ -87,24 +88,24 @@ public class MediaListeners {
         }
     };
 
-    public MediaListeners(MainContainerViewModel mainContainerViewModel) {
+    public MediaListeners(MainViewModel mainViewModel) {
 
-        this.artistText = mainContainerViewModel.getArtistTextProperty();
-        this.titleText = mainContainerViewModel.getTitleTextProperty();
-        this.imageCover = mainContainerViewModel.getImageCoverProperty();
-        this.fileNameText = mainContainerViewModel.getFileNameTextProperty();
-        this.media = mainContainerViewModel.getMediaProperty();
-        this.mediaPlayer = mainContainerViewModel.getMediaPlayerProperty();
-        this.sliderProgressUpdate = mainContainerViewModel.getSliderProgressUpdateProperty();
-        this.timePositionText = mainContainerViewModel.getTimePositionTextProperty();
-        this.timeDurationText = mainContainerViewModel.getTimeDurationTextProperty();
-        this.selectedProgress = mainContainerViewModel.getSelectedProgressProperty();
-        this.repeatStatus = mainContainerViewModel.getRepeatStatusProperty();
+        this.artistText = mainViewModel.getArtistTextProperty();
+        this.titleText = mainViewModel.getTitleTextProperty();
+        this.imageCover = mainViewModel.getImageCoverProperty();
+        this.fileNameText = mainViewModel.getFileNameTextProperty();
+        this.media = mainViewModel.getMediaProperty();
+        this.mediaPlayer = mainViewModel.getMediaPlayerProperty();
+        this.sliderProgressUpdate = mainViewModel.getSliderProgressUpdateProperty();
+        this.timePositionText = mainViewModel.getTimePositionTextProperty();
+        this.timeDurationText = mainViewModel.getTimeDurationTextProperty();
+        this.selectedProgress = mainViewModel.getSelectedProgressProperty();
+        this.repeatStatus = mainViewModel.getRepeatStatusProperty();
 
-        List<String> fileNamesList = mainContainerViewModel.getFileNamesList();
-        StringProperty playButtonTextProperty = mainContainerViewModel.getPlayButtonTextProperty();
-        Property<Number> selectedVolumeProperty = mainContainerViewModel.getSelectedVolumeProperty();
-        Property<Number> selectedAudioIndexProperty = mainContainerViewModel.getSelectedAudioIndexProperty();
+        List<String> fileNamesList = mainViewModel.getFileNamesList();
+        StringProperty playButtonTextProperty = mainViewModel.getPlayButtonTextProperty();
+        Property<Number> selectedVolumeProperty = mainViewModel.getSelectedVolumeProperty();
+        Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
 
         SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(
                 fileNamesList, media, mediaPlayer, metaDataHash,

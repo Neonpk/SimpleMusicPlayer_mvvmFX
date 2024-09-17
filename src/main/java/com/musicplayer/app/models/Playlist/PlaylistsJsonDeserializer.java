@@ -1,4 +1,4 @@
-package com.musicplayer.app.models;
+package com.musicplayer.app.models.Playlist;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class PlaylistJsonDeserializer {
+public class PlaylistsJsonDeserializer {
 
     private final String fileName;
 

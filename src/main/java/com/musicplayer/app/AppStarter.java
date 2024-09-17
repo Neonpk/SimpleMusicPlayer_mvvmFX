@@ -1,13 +1,12 @@
 package com.musicplayer.app;
 
-import com.musicplayer.app.models.PlaylistJsonDeserializer;
+import com.musicplayer.app.models.Playlist.PlaylistsJsonDeserializer;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.services.PlaylistsProvider;
 import com.musicplayer.app.services.VmProvider;
-import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
-import com.musicplayer.app.viewmodels.MainContainerViewModel;
-import com.musicplayer.app.views.MainContainerView;
+import com.musicplayer.app.viewmodels.MainViewModel;
+import com.musicplayer.app.views.MainView;
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.easydi.MvvmfxEasyDIApplication;
 import eu.lestard.easydi.EasyDI;
@@ -22,18 +21,18 @@ import java.io.IOException;
 
 public class AppStarter extends MvvmfxEasyDIApplication {
 
-    private MainContainerViewModel mainContainerViewModel;
+    private MainViewModel mainViewModel;
 
     @Override
     public void initEasyDi(EasyDI context) throws IOException {
 
         context.bindInstance(PlaylistJsonProvider.class, new PlaylistJsonProvider(
-                new PlaylistJsonDeserializer( "/home/chichard/Desktop/playlist.json" )
+                new PlaylistsJsonDeserializer( "/home/chichard/Desktop/playlist.json" )
         ) );
         context.bindInstance(PlaylistsProvider.class, new PlaylistsProvider(FXCollections.observableArrayList()));
         context.bindInstance(NavigationService.class, new NavigationService( new SimpleObjectProperty<>() ));
 
-        context.bindInstance(MainContainerViewModel.class, new MainContainerViewModel(
+        context.bindInstance(MainViewModel.class, new MainViewModel(
                 new VmProvider(
                         context.getInstance(PlaylistJsonProvider.class),
                         context.getInstance(PlaylistsProvider.class),
@@ -43,7 +42,7 @@ public class AppStarter extends MvvmfxEasyDIApplication {
 
         // ViewModels
 
-        mainContainerViewModel = context.getInstance(MainContainerViewModel.class);
+        mainViewModel = context.getInstance(MainViewModel.class);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AppStarter extends MvvmfxEasyDIApplication {
         stage.setTitle("Simple Music Player");
         stage.getIcons().add(icon);
 
-        Parent root = FluentViewLoader.fxmlView(MainContainerView.class).viewModel(mainContainerViewModel).load().getView();
+        Parent root = FluentViewLoader.fxmlView(MainView.class).viewModel(mainViewModel).load().getView();
 
         Scene scene = new Scene(root, 1400, 720);
         scene.getStylesheets().add( stylePath );

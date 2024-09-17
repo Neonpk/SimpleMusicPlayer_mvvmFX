@@ -11,9 +11,8 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.layout.Pane?>
 <BorderPane id="borderPaneMain" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.musicplayer.app.views.MainContainerView">
+            fx:controller="com.musicplayer.app.views.MainView">
 
     <left>
         <BorderPane minWidth="250" style="-fx-background-color: #000000; -fx-padding: 10;" BorderPane.alignment="CENTER_LEFT">

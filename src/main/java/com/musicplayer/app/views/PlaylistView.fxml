@@ -27,18 +27,18 @@
             </center>
 
             <right>
-                <Button text="Добавить треки"/>
+                <Button text="Добавить треки" fx:id="addTracksButton"/>
             </right>
 
             <bottom>
-                <TextField promptText="Введите поисковый запрос..."/>
+                <TextField promptText="Введите поисковый запрос..." fx:id="searchTextField"/>
             </bottom>
 
         </BorderPane>
     </top>
 
     <center>
-        <ListView fx:id="selectedPlaylist">
+        <ListView fx:id="listViewTracks">
             <BorderPane.margin>
                 <Insets top="10" />
             </BorderPane.margin>

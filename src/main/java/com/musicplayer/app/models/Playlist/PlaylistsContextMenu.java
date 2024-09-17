@@ -1,4 +1,4 @@
-package com.musicplayer.app.models;
+package com.musicplayer.app.models.Playlist;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;

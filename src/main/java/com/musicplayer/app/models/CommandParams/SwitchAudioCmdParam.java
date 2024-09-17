@@ -1,4 +1,4 @@
-package com.musicplayer.app.models;
+package com.musicplayer.app.models.CommandParams;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;

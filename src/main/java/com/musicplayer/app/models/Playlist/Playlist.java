@@ -1,4 +1,5 @@
-package com.musicplayer.app.models;
+package com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.models.Track.Track;
 import lombok.*;
 
 import java.util.List;

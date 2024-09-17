@@ -18,7 +18,7 @@ public class CreateEditPlaylistView implements FxmlView<CreateEditPlaylistViewMo
     CreateEditPlaylistViewModel viewModel;
 
     @FXML
-    private TextField textFieldPlaylistName;
+    private TextField playlistNameTextField;
 
     @FXML
     private Button savePlaylistButton;
@@ -28,7 +28,7 @@ public class CreateEditPlaylistView implements FxmlView<CreateEditPlaylistViewMo
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        textFieldPlaylistName.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );
+        playlistNameTextField.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );
         labelStatusMessage.textProperty().bindBidirectional( viewModel.getStatusTextProperty() );
         savePlaylistButton.setOnAction( (_) -> viewModel.getSavePlaylistCommand().execute()  );
     }

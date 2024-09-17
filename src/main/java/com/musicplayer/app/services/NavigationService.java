@@ -15,5 +15,6 @@ public class NavigationService {
 
     public void navigate(Node view) {
         selectedView.setValue(view);
+        System.gc();
     }
 }

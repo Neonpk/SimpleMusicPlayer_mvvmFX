@@ -1,6 +1,6 @@
 package com.musicplayer.app.commands.playlist_commands;
 
-import com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
 import com.musicplayer.app.views.CreateEditPlaylistView;
@@ -21,7 +21,7 @@ public class EditPlaylistCommand extends DelegateCommand {
     public EditPlaylistCommand(VmProvider vmProvider, Property<Playlist> selectedPlaylist, Property<Node> selectedView) {
         super(() -> new Action() {
             @Override
-            protected void action() throws Exception {
+            protected void action() {
                 editPlaylist(vmProvider, selectedPlaylist, selectedView);
             }
         });

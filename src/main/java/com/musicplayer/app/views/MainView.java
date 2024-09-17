@@ -1,8 +1,8 @@
 package com.musicplayer.app.views;
 
-import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.models.PlaylistsContextMenu;
-import com.musicplayer.app.viewmodels.MainContainerViewModel;
+import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.models.Playlist.PlaylistsContextMenu;
+import com.musicplayer.app.viewmodels.MainViewModel;
 import de.saxsys.mvvmfx.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,12 +13,12 @@ import javafx.scene.layout.BorderPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainContainerView implements FxmlView<MainContainerViewModel>, Initializable {
+public class MainView implements FxmlView<MainViewModel>, Initializable {
 
     // Inject ViewModel
 
     @InjectViewModel
-    private MainContainerViewModel viewModel;
+    private MainViewModel viewModel;
 
     @FXML
     private BorderPane contentPresenter;

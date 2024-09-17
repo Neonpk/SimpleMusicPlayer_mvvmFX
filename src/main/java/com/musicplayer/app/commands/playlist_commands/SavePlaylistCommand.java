@@ -1,27 +1,27 @@
 package com.musicplayer.app.commands.playlist_commands;
-import com.musicplayer.app.models.Playlist;
-import com.musicplayer.app.models.SavePlaylistCmdParam;
+import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.models.CommandParams.SavePlaylistCmdParam;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
-import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.viewmodels.PlaylistViewModel;
 import com.musicplayer.app.views.PlaylistView;
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class SavePlaylistCommand extends DelegateCommand {
 
-    private static void saveNewPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) throws IOException {
+    private static void saveNewPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
 
         // Providers
         PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
-        PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
         NavigationService navService = vmProvider.getNavigationService();
 
         // Params
@@ -33,21 +33,24 @@ public class SavePlaylistCommand extends DelegateCommand {
             return;
         }
 
-        int id = playlistsProvider.getPlaylists().size() + 1;
+        ObservableList<Playlist> playlists = playlistsProvider.getPlaylists();
+
+        int id = !playlists.isEmpty() ? playlists.getLast().getId() + 1 : 1;
         Playlist playlist = new Playlist( id, playListName.getValue(), new ArrayList<>( ));
 
-        playlistJsonProvider.addPlaylist( playlist );
-        playlistsProvider.getPlaylists().add( playlist );
+        playlists.add( playlist );
 
-        navService.navigate(FluentViewLoader.fxmlView(PlaylistView.class).load().getView());
+        var fxmlView = FluentViewLoader.fxmlView(PlaylistView.class);
+        var viewTuple = fxmlView.viewModel( new PlaylistViewModel(vmProvider, new SimpleObjectProperty<>(playlist)) );
+
+        navService.navigate(viewTuple.load().getView());
     }
 
-    private static void saveSelectedPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) throws IOException {
+    private static void saveSelectedPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
 
         // Providers
-        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
-        PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
         NavigationService navService = vmProvider.getNavigationService();
+        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
 
         // Params
         StringProperty playListName = savePlaylistCmdParam.getPlayListName();
@@ -63,19 +66,21 @@ public class SavePlaylistCommand extends DelegateCommand {
         Playlist playlist = selectedPlaylist.getValue();
         playlist.setName(playListName.getValue());
 
-        playlistJsonProvider.replacePlaylist( id, playlist );
         playlistsProvider.getPlaylists().set( id, playlist );
 
-        navService.navigate(FluentViewLoader.fxmlView(PlaylistView.class).load().getView());
+        var fxmlView = FluentViewLoader.fxmlView(PlaylistView.class);
+        var viewTuple = fxmlView.viewModel( new PlaylistViewModel(vmProvider, selectedPlaylist) );
+
+        navService.navigate(viewTuple.load().getView());
     }
 
     public SavePlaylistCommand(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
         super(() -> new Action() {
             @Override
-            protected void action() throws IOException {
+            protected void action() {
                 if (savePlaylistCmdParam.isEditMode()) {
                     saveSelectedPlaylist(vmProvider, savePlaylistCmdParam);
-                }else {
+                } else {
                     saveNewPlaylist(vmProvider, savePlaylistCmdParam);
                 }
             }

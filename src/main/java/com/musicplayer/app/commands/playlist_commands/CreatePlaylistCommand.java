@@ -11,9 +11,8 @@ import javafx.scene.Node;
 
 public class CreatePlaylistCommand extends DelegateCommand {
 
-    private static void createPlaylist(VmProvider createPlaylistVmProvider, Property<Node> selectedView) {
-
-        CreateEditPlaylistViewModel viewModelInstance = new CreateEditPlaylistViewModel( createPlaylistVmProvider );
+    private static void createPlaylist(VmProvider vmProvider, Property<Node> selectedView) {
+        CreateEditPlaylistViewModel viewModelInstance = new CreateEditPlaylistViewModel( vmProvider );
         var viewTuple = FluentViewLoader.fxmlView(CreateEditPlaylistView.class).viewModel(viewModelInstance);
         selectedView.setValue( viewTuple.load().getView() );
     }

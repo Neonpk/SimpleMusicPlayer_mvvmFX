@@ -7,7 +7,8 @@ import com.musicplayer.app.commands.playlist_commands.EditPlaylistCommand;
 import com.musicplayer.app.commands.playlist_commands.SelectedPlaylistCommand;
 import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
-import com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.models.Playlist.PlaylistCollectionListener;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
@@ -18,7 +19,6 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.image.Image;
@@ -27,7 +27,7 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.*;
 
-public class MainContainerViewModel implements ViewModel {
+public class MainViewModel implements ViewModel {
 
     // Properties (fields)
 
@@ -121,7 +121,7 @@ public class MainContainerViewModel implements ViewModel {
     private final Command switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
     @Getter
-    private final Command selectedPlaylistCommand = new SelectedPlaylistCommand(selectedPlaylistProperty, selectedView);
+    private final Command selectedPlaylistCommand;
 
     @Getter
     private final Command playlistCreateCommand;
@@ -134,7 +134,7 @@ public class MainContainerViewModel implements ViewModel {
 
     // Constructor
 
-    public MainContainerViewModel(VmProvider vmProvider) throws IOException {
+    public MainViewModel(VmProvider vmProvider) throws IOException {
 
         PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
         PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
@@ -143,11 +143,13 @@ public class MainContainerViewModel implements ViewModel {
         playlists = playlistsProvider.getPlaylists();
         navigationService.bindBidirectional(selectedView);
 
+        selectedPlaylistCommand = new SelectedPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
         playlistCreateCommand = new CreatePlaylistCommand(vmProvider, selectedView);
         playlistEditCommand = new EditPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
         deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());
+        playlists.addListener(new PlaylistCollectionListener(playlistJsonProvider).getPlaylistListener());
 
         new InitializeMediaCommand(fileNamesList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }

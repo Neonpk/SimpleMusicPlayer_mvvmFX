@@ -1,6 +1,6 @@
 package com.musicplayer.app.services;
 
-import com.musicplayer.app.models.Playlist;
+import com.musicplayer.app.models.Playlist.Playlist;
 import javafx.collections.ObservableList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

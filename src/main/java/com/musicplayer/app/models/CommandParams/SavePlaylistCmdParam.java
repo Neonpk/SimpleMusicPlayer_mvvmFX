@@ -1,5 +1,6 @@
-package com.musicplayer.app.models;
+package com.musicplayer.app.models.CommandParams;
 
+import com.musicplayer.app.models.Playlist.Playlist;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import lombok.AllArgsConstructor;

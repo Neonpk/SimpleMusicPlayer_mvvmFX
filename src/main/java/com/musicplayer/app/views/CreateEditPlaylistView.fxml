@@ -9,7 +9,7 @@
       fx:controller="com.musicplayer.app.views.CreateEditPlaylistView"
       alignment="CENTER" maxWidth="350">
 
-    <TextField promptText="Введите название плейлиста" fx:id="textFieldPlaylistName" />
+    <TextField promptText="Введите название плейлиста" fx:id="playlistNameTextField" />
 
     <FlowPane alignment="CENTER_LEFT">
 
