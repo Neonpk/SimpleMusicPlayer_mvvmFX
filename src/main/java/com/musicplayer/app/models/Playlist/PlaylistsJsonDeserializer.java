@@ -11,6 +11,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@SuppressWarnings("all")
 public class PlaylistsJsonDeserializer {
 
     private final String fileName;

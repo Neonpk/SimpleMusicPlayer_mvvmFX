@@ -17,6 +17,7 @@ public class SelectedPlaylistCommand extends DelegateCommand {
         PlaylistViewModel viewModelInstance = new PlaylistViewModel( vmProvider, selectedPlaylistProperty );
 
         var viewTuple = FluentViewLoader.fxmlView(PlaylistView.class).viewModel(viewModelInstance);
+
         selectedView.setValue(viewTuple.load().getView());
     }
 

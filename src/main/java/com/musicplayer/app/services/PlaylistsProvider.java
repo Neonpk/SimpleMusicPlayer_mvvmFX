@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+@SuppressWarnings("all")
 public class PlaylistsProvider {
     private final ObservableList<Playlist> playlists;
 }

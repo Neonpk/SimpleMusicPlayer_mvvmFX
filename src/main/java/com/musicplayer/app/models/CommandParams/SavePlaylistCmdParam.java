@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class SavePlaylistCmdParam {
     private final StringProperty playListName;
     private final StringProperty statusMessage;

@@ -6,8 +6,6 @@ import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.collections.ObservableList;
 
-import java.util.Objects;
-
 public class DeleteTrackCommand extends DelegateCommand {
 
     private static void deleteTrack(DeleteTrackCmdParam deleteTrackCmdParam) {

@@ -1,7 +1,7 @@
 package com.musicplayer.app.views;
 
 import com.musicplayer.app.models.Playlist.Playlist;
-import com.musicplayer.app.models.Playlist.PlaylistsContextMenu;
+import com.musicplayer.app.models.Playlist.PlaylistContextMenu;
 import com.musicplayer.app.viewmodels.MainViewModel;
 import de.saxsys.mvvmfx.*;
 import javafx.fxml.FXML;
@@ -119,10 +119,11 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
         prevButton.setOnAction((_) -> viewModel.getSwitchPrevAudioCommand().execute() );
         createPlaylistButton.setOnAction((_) -> viewModel.getPlaylistCreateCommand().execute() );
 
-        PlaylistsContextMenu playlistsContextMenu = new PlaylistsContextMenu();
-        viewModel.getContextMenuProperty().setValue( playlistsContextMenu.getContextMenu() );
-        playlistsContextMenu.getEditPlaylistName().setOnAction( (_) -> viewModel.getPlaylistEditCommand().execute() );
-        playlistsContextMenu.getDeletePlaylist().setOnAction( (_) -> viewModel.getDeletePlaylistCommand().execute() );
+        PlaylistContextMenu playlistContextMenu = new PlaylistContextMenu();
+        viewModel.getContextMenuProperty().setValue( playlistContextMenu.getContextMenu() );
+        playlistContextMenu.getEditPlaylistName().setOnAction( (_) -> viewModel.getPlaylistEditCommand().execute() );
+        playlistContextMenu.getDeletePlaylist().setOnAction( (_) -> viewModel.getDeletePlaylistCommand().execute() );
 
     }
+
 }

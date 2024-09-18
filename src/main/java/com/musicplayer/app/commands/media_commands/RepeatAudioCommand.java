@@ -19,7 +19,7 @@ public class RepeatAudioCommand extends DelegateCommand {
     public RepeatAudioCommand(Property<MediaPlayer> mediaPlayer, Property<Boolean> isRepeat, StringProperty repeatButtonText) {
         super(() -> new Action() {
             @Override
-            protected void action() throws Exception {
+            protected void action() {
                 repeat(mediaPlayer.getValue(), isRepeat, repeatButtonText);
             }
         });

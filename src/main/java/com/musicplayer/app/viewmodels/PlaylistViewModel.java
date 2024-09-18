@@ -2,6 +2,7 @@ package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.commands.track_commands.AddNewTracksCommand;
 import com.musicplayer.app.commands.track_commands.DeleteTrackCommand;
+import com.musicplayer.app.commands.track_commands.SearchTracksCommand;
 import com.musicplayer.app.models.CommandParams.DeleteTrackCmdParam;
 import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.Track.Track;
@@ -10,17 +11,18 @@ import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.services.VmProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ContextMenu;
+import javafx.stage.Stage;
 import lombok.Getter;
 
 @Getter
 public class PlaylistViewModel implements ViewModel {
+
+    private final Property<Stage> primaryStageProperty = new SimpleObjectProperty<>();
 
     private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
     private final Property<Track> selectedTrackProperty = new SimpleObjectProperty<>();
@@ -28,9 +30,11 @@ public class PlaylistViewModel implements ViewModel {
     private final Property<ContextMenu> contextMenuProperty = new SimpleObjectProperty<>();
 
     private final ObservableList<Track> tracks = FXCollections.observableArrayList();
+    private final FilteredList<Track> filteredTrackList = new FilteredList<>(tracks, (_) -> true);
 
     private final Command deleteTrackCommand;
     private final Command addTracksCommand;
+    private final Command searchTracksCommand;
 
     public PlaylistViewModel(VmProvider vmProvider, Property<Playlist> selectedPlaylistProperty) {
 
@@ -41,6 +45,7 @@ public class PlaylistViewModel implements ViewModel {
 
         deleteTrackCommand = new DeleteTrackCommand(new DeleteTrackCmdParam(playlistId, tracks, selectedTrackProperty));
         addTracksCommand = new AddNewTracksCommand(tracks);
+        searchTracksCommand = new SearchTracksCommand(filteredTrackList, searchTextProperty);
 
         this.selectedPlaylistProperty.bindBidirectional(selectedPlaylistProperty);
         tracks.addAll(selectedPlaylistProperty.getValue().getTracks());

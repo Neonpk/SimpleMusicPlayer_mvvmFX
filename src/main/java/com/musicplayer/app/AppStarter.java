@@ -26,27 +26,27 @@ public class AppStarter extends MvvmfxEasyDIApplication {
     @Override
     public void initEasyDi(EasyDI context) throws IOException {
 
-        context.bindInstance(PlaylistJsonProvider.class, new PlaylistJsonProvider(
-                new PlaylistsJsonDeserializer( "/home/chichard/Desktop/playlist.json" )
-        ) );
         context.bindInstance(PlaylistsProvider.class, new PlaylistsProvider(FXCollections.observableArrayList()));
-        context.bindInstance(NavigationService.class, new NavigationService( new SimpleObjectProperty<>() ));
+        context.bindInstance(NavigationService.class, new NavigationService(new SimpleObjectProperty<>()));
 
-        context.bindInstance(MainViewModel.class, new MainViewModel(
-                new VmProvider(
-                        context.getInstance(PlaylistJsonProvider.class),
-                        context.getInstance(PlaylistsProvider.class),
-                        context.getInstance(NavigationService.class)
-                )
+        context.bindInstance(PlaylistJsonProvider.class, new PlaylistJsonProvider(
+                new PlaylistsJsonDeserializer("/home/chichard/Desktop/playlist.json")
+        ) );
+
+        context.bindInstance(VmProvider.class, new VmProvider(
+                context.getInstance(PlaylistJsonProvider.class),
+                context.getInstance(PlaylistsProvider.class),
+                context.getInstance(NavigationService.class)
         ));
 
-        // ViewModels
+        context.bindInstance(MainViewModel.class, new MainViewModel(context.getInstance(VmProvider.class)));
 
+        // Instances
         mainViewModel = context.getInstance(MainViewModel.class);
     }
 
     @Override
-    public void startMvvmfx(Stage stage) throws Exception {
+    public void startMvvmfx(Stage stage) {
 
         Image icon = new Image(String.valueOf(getClass().getResource("images/favicon.png")));
         String stylePath = String.valueOf(getClass().getResource( "css/main.css" ));

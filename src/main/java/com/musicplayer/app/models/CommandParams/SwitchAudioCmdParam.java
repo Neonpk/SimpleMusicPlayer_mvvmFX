@@ -16,6 +16,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@SuppressWarnings("all")
 public class SwitchAudioCmdParam {
     private final List<String> fileNamesList;
     private final Property<Media> mediaProperty;

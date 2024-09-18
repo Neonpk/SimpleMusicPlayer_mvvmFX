@@ -8,10 +8,14 @@ import lombok.Getter;
 public class PlaylistContextMenu {
 
     private final ContextMenu contextMenu = new ContextMenu();
-    private final MenuItem deleteTrack = new MenuItem("Удалить трек");
+
+    private final MenuItem editPlaylistName = new MenuItem("Изменить название");
+
+    private final MenuItem deletePlaylist = new MenuItem("Удалить плейлист");
 
     public PlaylistContextMenu() {
-        contextMenu.getItems().add(deleteTrack);
+        contextMenu.getItems().add(editPlaylistName);
+        contextMenu.getItems().add(deletePlaylist);
     }
 
 }

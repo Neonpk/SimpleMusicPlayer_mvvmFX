@@ -5,6 +5,9 @@ import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+
 import java.util.Date;
 
 public class AddNewTracksCommand extends DelegateCommand {
@@ -13,11 +16,12 @@ public class AddNewTracksCommand extends DelegateCommand {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Выберите mp3 файлы");
-        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Music files (*.mp3)", "*.mp3"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Media files (*.mp3, *.mp4)", "*.mp3", "*.mp4"));
 
         long timestamp = new Date().getTime() / 1000;
+        Window primaryStage = Stage.getWindows().getFirst();
 
-        fileChooser.showOpenMultipleDialog(null).
+        fileChooser.showOpenMultipleDialog(primaryStage).
                 forEach(obj -> tracks.add(
                         new Track(
                             !tracks.isEmpty() ? tracks.getLast().getId() + 1 : 1,
