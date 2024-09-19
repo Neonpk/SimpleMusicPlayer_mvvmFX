@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<fx:root type="javafx.scene.control.ListCell" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <graphic>
+        <BorderPane>
+
+           <left>
+               <FlowPane hgap="15" alignment="CENTER_LEFT" maxWidth="300">
+
+                   <ImageView fitHeight="70" fitWidth="70" style="-fx-background-radius: 20;" fx:id="imageViewCover" />
+
+                   <VBox alignment="CENTER_LEFT">
+                       <Label text="Артист" fx:id="labelArtist" style="-fx-text-fill: black;"/>
+                       <Label text="Трек" fx:id="labelTitle" style="-fx-text-fill: black;" />
+                       <Label text="Путь" fx:id="labelFileName" style="-fx-text-fill: black;" />
+                   </VBox>
+
+               </FlowPane>
+           </left>
+
+            <right>
+                <FlowPane hgap="50" alignment="CENTER_RIGHT">
+
+                    <padding>
+                        <Insets right="15"/>
+                    </padding>
+
+                    <Label text="Время добавления" fx:id="labelAddedTime" style="-fx-text-fill: black;"/>
+                </FlowPane>
+            </right>
+
+        </BorderPane>
+    </graphic>
+</fx:root>

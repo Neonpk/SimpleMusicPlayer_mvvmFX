@@ -1,20 +1,22 @@
 package com.musicplayer.app.models.Track;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+
+
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class Track {
 
     private int id;
     private String fileName;
     private long added;
 
-    @Override
-    public String toString() {
-        return fileName;
-    }
+    @JsonIgnore
+    private final HashMap<String, Object> metaData = new HashMap<>();
 }

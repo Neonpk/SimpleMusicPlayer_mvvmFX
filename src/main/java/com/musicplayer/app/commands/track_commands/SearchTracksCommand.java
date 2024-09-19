@@ -6,6 +6,7 @@ import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.StringProperty;
 import javafx.collections.transformation.FilteredList;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SearchTracksCommand extends DelegateCommand {
@@ -20,11 +21,16 @@ public class SearchTracksCommand extends DelegateCommand {
         }
 
         filteredTrackList.setPredicate(track ->
-                searchText.startsWith(String.valueOf(track.getId()).toLowerCase())
-                ||
-                searchText.startsWith(track.getFileName().toLowerCase())
-                ||
-                searchText.startsWith(new Date(track.getAdded()).toString().toLowerCase())
+            track.getMetaData().getOrDefault("artist", "").toString().toLowerCase().startsWith(searchText)
+            ||
+            track.getMetaData().getOrDefault("title", "").toString().toLowerCase().startsWith(searchText)
+            ||
+            track.getFileName().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1").toLowerCase().startsWith(searchText)
+            ||
+            String.valueOf(track.getId()).startsWith(searchText)
+            ||
+            new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+                    .format(new Date(track.getAdded())).startsWith(searchText)
         );
 
     }

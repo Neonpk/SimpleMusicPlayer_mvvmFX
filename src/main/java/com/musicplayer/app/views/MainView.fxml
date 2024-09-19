@@ -19,13 +19,20 @@
 
             <center>
                 <BorderPane minWidth="150" style="-fx-background-color: #121212; -fx-background-radius: 20;" BorderPane.alignment="CENTER">
-                    <center>
+                    <top>
                         <VBox alignment="TOP_CENTER" style="-fx-padding: 10;">
                             <Label text="Плейлисты"/>
                             <Separator styleClass="separator" />
                             <Button text="Создать плейлист" styleClass="createPlaylistButton" fx:id="createPlaylistButton" />
-                            <ListView styleClass="listViewPlaylists" fx:id="listViewPlaylist" />
                         </VBox>
+                    </top>
+
+                    <center>
+                        <ListView styleClass="listViewPlaylists" fx:id="listViewPlaylist">
+                            <BorderPane.margin>
+                                <Insets bottom="20" left="10" right="10" />
+                            </BorderPane.margin>
+                        </ListView>
                     </center>
                 </BorderPane>
             </center>

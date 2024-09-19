@@ -1,4 +1,5 @@
 package com.musicplayer.app.views;
+import com.musicplayer.app.models.Track.TrackListViewCellFactory;
 import com.musicplayer.app.models.Track.TrackContextMenu;
 import com.musicplayer.app.models.Track.Track;
 import com.musicplayer.app.viewmodels.PlaylistViewModel;
@@ -18,6 +19,9 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
     private PlaylistViewModel viewModel;
 
     @FXML
+    private Label playlistNameLabel;
+
+    @FXML
     private ListView<Track> listViewTracks;
 
     @FXML
@@ -31,6 +35,9 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
 
         listViewTracks.setItems(viewModel.getFilteredTrackList());
         listViewTracks.contextMenuProperty().bindBidirectional(viewModel.getContextMenuProperty() );
+        listViewTracks.setCellFactory( new TrackListViewCellFactory() );
+
+        playlistNameLabel.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );
         searchTextField.textProperty().bindBidirectional( viewModel.getSearchTextProperty() );
 
         // Events

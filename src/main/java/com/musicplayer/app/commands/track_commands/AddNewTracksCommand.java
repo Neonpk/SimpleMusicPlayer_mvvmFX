@@ -18,7 +18,7 @@ public class AddNewTracksCommand extends DelegateCommand {
         fileChooser.setTitle("Выберите mp3 файлы");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Media files (*.mp3, *.mp4)", "*.mp3", "*.mp4"));
 
-        long timestamp = new Date().getTime() / 1000;
+        long timestamp = new Date().getTime();
         Window primaryStage = Stage.getWindows().getFirst();
 
         fileChooser.showOpenMultipleDialog(primaryStage).

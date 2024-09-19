@@ -15,8 +15,10 @@ module com.musicplayer.app {
     opens com.musicplayer.app.viewmodels to de.saxsys.mvvmfx, de.saxsys.mvvmfx.easydi, easy.di, javafx.fxml;
     opens com.musicplayer.app.models to de.saxsys.mvvmfx, de.saxsys.mvvmfx.easydi, easy.di, javafx.fxml, com.fasterxml.jackson.databind;
 
-    exports com.musicplayer.app to javafx.fxml, javafx.graphics;
     opens com.musicplayer.app.models.CommandParams to com.fasterxml.jackson.databind, de.saxsys.mvvmfx, de.saxsys.mvvmfx.easydi, easy.di, javafx.fxml;
     opens com.musicplayer.app.models.Track to com.fasterxml.jackson.databind, de.saxsys.mvvmfx, de.saxsys.mvvmfx.easydi, easy.di, javafx.fxml;
     opens com.musicplayer.app.models.Playlist to com.fasterxml.jackson.databind, de.saxsys.mvvmfx, de.saxsys.mvvmfx.easydi, easy.di, javafx.fxml;
+    opens com.musicplayer.app.controls to javafx.fxml;
+
+    exports com.musicplayer.app to javafx.fxml, javafx.graphics;
 }

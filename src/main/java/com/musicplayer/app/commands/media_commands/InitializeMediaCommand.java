@@ -19,6 +19,7 @@ public class InitializeMediaCommand extends DelegateCommand {
     {
         fileNamesList.add(new File("/home/chichard/Музыка/timberlake.mp3").toURI().toString());
         fileNamesList.add(new File("/home/chichard/Музыка/lalala.mp3").toURI().toString());
+        fileNamesList.add(new File("/home/chichard/Музыка/2pac_shorty.mp3").toURI().toString());
 
         mediaProperty.setValue(new Media(fileNamesList.getFirst()));
         mediaPlayerProperty.setValue(new MediaPlayer(mediaProperty.getValue()));

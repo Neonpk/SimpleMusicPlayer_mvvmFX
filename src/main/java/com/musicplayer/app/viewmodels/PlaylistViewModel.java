@@ -16,14 +16,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ContextMenu;
-import javafx.stage.Stage;
 import lombok.Getter;
 
 @Getter
 public class PlaylistViewModel implements ViewModel {
 
-    private final Property<Stage> primaryStageProperty = new SimpleObjectProperty<>();
-
+    private final StringProperty playlistNameProperty = new SimpleStringProperty();
     private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
     private final Property<Track> selectedTrackProperty = new SimpleObjectProperty<>();
     private final StringProperty searchTextProperty = new SimpleStringProperty();
@@ -46,6 +44,8 @@ public class PlaylistViewModel implements ViewModel {
         deleteTrackCommand = new DeleteTrackCommand(new DeleteTrackCmdParam(playlistId, tracks, selectedTrackProperty));
         addTracksCommand = new AddNewTracksCommand(tracks);
         searchTracksCommand = new SearchTracksCommand(filteredTrackList, searchTextProperty);
+
+        playlistNameProperty.setValue(selectedPlaylistProperty.getValue().getName());
 
         this.selectedPlaylistProperty.bindBidirectional(selectedPlaylistProperty);
         tracks.addAll(selectedPlaylistProperty.getValue().getTracks());
