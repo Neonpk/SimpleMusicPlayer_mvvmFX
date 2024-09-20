@@ -19,7 +19,7 @@ import lombok.Getter;
 @SuppressWarnings("all")
 public class MediaProvider {
     private final ObservableList<Playlist> playlists;
-    private final ArrayList<Track> trackList;
+    private final ArrayList<Track> trackListQueue;
     private final Property<Number> selectedAudioIndexProperty;
     private final Property<Media> mediaProperty;
     private final Property<MediaPlayer> mediaPlayerProperty;

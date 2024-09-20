@@ -56,7 +56,7 @@ public class PlaylistViewModel implements ViewModel {
         Property<Media> mediaProperty = mediaProvider.getMediaProperty();
         Property<MediaPlayer> mediaPlayerProperty = mediaProvider.getMediaPlayerProperty();
         Property<Number> selectedAudioIndexProperty = mediaProvider.getSelectedAudioIndexProperty();
-        List<Track> trackList = mediaProvider.getTrackList();
+        List<Track> trackListQueue = mediaProvider.getTrackListQueue();
 
         // Listeners
 
@@ -75,7 +75,7 @@ public class PlaylistViewModel implements ViewModel {
 
         playTrackCommand = new PlayTrackCommand(
                 new PlayTrackCmdParam(
-                        trackList, selectedTrackProperty, selectedAudioIndexProperty,
+                        trackListQueue, selectedTrackProperty, selectedAudioIndexProperty,
                         selectedPlaylistProperty, mediaProperty, mediaPlayerProperty,
                         metaDataChangeListenerProperty, durationChangeListenerProperty,
                         onReadyMediaListenerProperty, onEndMediaListenerProperty
@@ -86,7 +86,9 @@ public class PlaylistViewModel implements ViewModel {
 
         this.selectedPlaylistProperty.bindBidirectional(selectedPlaylistProperty);
         tracks.addAll(selectedPlaylistProperty.getValue().getTracks());
-        tracks.addListener(new TrackCollectionListener(playlistJsonProvider, selectedPlaylistProperty).getTracksListener());
+        tracks.addListener(
+                new TrackCollectionListener(playlistJsonProvider, selectedPlaylistProperty, trackListQueue).getTrackCollectionListener()
+        );
     }
 
 }

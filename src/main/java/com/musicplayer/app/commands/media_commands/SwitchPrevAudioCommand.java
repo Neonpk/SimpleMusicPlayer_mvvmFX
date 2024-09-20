@@ -17,7 +17,7 @@ import java.util.List;
 public class SwitchPrevAudioCommand extends DelegateCommand {
 
     private static int index = 0;
-    private static List<Track> trackList;
+    private static List<Track> trackListQueue;
 
     private static Property<Media> mediaProperty;
     private static Property<MediaPlayer> mediaPlayerProperty;
@@ -40,7 +40,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
 
     private static void setNewMedia() {
 
-        String fileUri = new File(trackList.get( index ).getFileName()).toURI().toString();
+        String fileUri = new File(trackListQueue.get( index ).getFileName()).toURI().toString();
         Media newMedia = new Media( fileUri );
         newMedia.getMetadata().addListener(metaDataListenger);
         MediaPlayer newMediaPlayer = new MediaPlayer(newMedia);
@@ -53,7 +53,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
 
     private static void prev(SwitchAudioCmdParam switchAudioCmdParam) {
 
-        trackList = switchAudioCmdParam.getTrackList();
+        trackListQueue = switchAudioCmdParam.getTrackList();
         mediaProperty = switchAudioCmdParam.getMediaProperty();
         mediaPlayerProperty = switchAudioCmdParam.getMediaPlayerProperty();
         durationChangeListener = switchAudioCmdParam.getDurationChangeListener();
@@ -63,7 +63,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
 
         Property<Number> selectedAudioIndex = switchAudioCmdParam.getSelectedAudioIndex();
 
-        int count = trackList.size();
+        int count = trackListQueue.size();
         index = selectedAudioIndex.getValue().intValue();
 
         index = (index + count - 1) % count;

@@ -86,7 +86,7 @@ public class MainViewModel implements ViewModel {
 
     private final ObservableList<Playlist> playlists;
 
-    private final List<Track> trackList;
+    private final List<Track> trackListQueue;
 
     // Commands
 
@@ -125,7 +125,7 @@ public class MainViewModel implements ViewModel {
         navigationService.bindBidirectional(selectedView);
 
         playlists = mediaProvider.getPlaylists();
-        trackList = mediaProvider.getTrackList();
+        trackListQueue = mediaProvider.getTrackListQueue();
 
         MediaListeners mediaListeners = new MediaListeners(this);
 
@@ -138,11 +138,11 @@ public class MainViewModel implements ViewModel {
         deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());
-        trackList.addAll(playlists.getFirst().getTracks());
+        trackListQueue.addAll(playlists.getFirst().getTracks());
 
         playlists.addListener(new PlaylistCollectionListener(playlistJsonProvider).getPlaylistListener());
 
-        new InitializeMediaCommand(trackList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
+        new InitializeMediaCommand(trackListQueue, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }
 
 }

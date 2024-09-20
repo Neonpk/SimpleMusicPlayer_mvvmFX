@@ -100,7 +100,7 @@ public class MediaListeners {
         this.repeatStatusProperty = mainViewModel.getRepeatStatusProperty();
 
         Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
-        List<Track> trackList = mainViewModel.getTrackList();
+        List<Track> trackListQueue = mainViewModel.getTrackListQueue();
         StringProperty artistTextProperty = mainViewModel.getArtistTextProperty();
         StringProperty titleTextProperty = mainViewModel.getTitleTextProperty();
         Property<Image> imageCoverProperty = mainViewModel.getImageCoverProperty();
@@ -116,7 +116,7 @@ public class MediaListeners {
         mainViewModel.getOnEndMediaListener().setValue( onEndMediaListener );
 
         SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(
-                trackList, mediaProperty, mediaPlayerProperty,
+                trackListQueue, mediaProperty, mediaPlayerProperty,
                 selectedAudioIndexProperty, onReadyMediaListener,
                 durationChangeListener, metaDataChangeListener, onEndMediaListener
         );

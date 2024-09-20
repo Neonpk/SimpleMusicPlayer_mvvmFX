@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PlayTrackCommand extends DelegateCommand {
 
-    private static List<Track> playlistTracks;
+    private static List<Track> trackListQueue;
 
     private static Property<Track> selectedTrackProperty;
     private static Property<Number> selectedAudioIndexProperty;
@@ -53,7 +53,7 @@ public class PlayTrackCommand extends DelegateCommand {
         newMediaPlayer.setOnReady(onReadyMediaListener);
         newMediaPlayer.setOnEndOfMedia(onEndMediaListener);
 
-        selectedAudioIndexProperty.setValue( playlistTracks.indexOf(selectedTrackProperty.getValue()) );
+        selectedAudioIndexProperty.setValue( trackListQueue.indexOf(selectedTrackProperty.getValue()) );
 
         mediaProperty.setValue(newMedia);
         mediaPlayerProperty.setValue(newMediaPlayer);
@@ -63,7 +63,7 @@ public class PlayTrackCommand extends DelegateCommand {
 
         Property<Playlist> selectedPlaylistProperty = playTrackCmdParam.getSelectedPlaylistProperty();
 
-        playlistTracks = selectedPlaylistProperty.getValue().getTracks();
+        trackListQueue = selectedPlaylistProperty.getValue().getTracks();
         selectedTrackProperty = playTrackCmdParam.getSelectedTrackProperty();
         selectedAudioIndexProperty = playTrackCmdParam.getSelectedAudioIndexProperty();
         mediaProperty = playTrackCmdParam.getMediaProperty();
@@ -79,7 +79,7 @@ public class PlayTrackCommand extends DelegateCommand {
         List<Track> trackList = playTrackCmdParam.getTrackList();
 
         trackList.clear();
-        trackList.addAll(playlistTracks);
+        trackList.addAll(trackListQueue);
 
         disposeOldMedia();
         setNewMedia();
