@@ -57,6 +57,8 @@ public class MainViewModel implements ViewModel {
 
     private final Property<Boolean> sliderProgressUpdateProperty = new SimpleObjectProperty<>(false);
 
+    private final Property<Boolean> muteStatusProperty = new SimpleObjectProperty<>(false);
+
     private final Property<Boolean> repeatStatusProperty = new SimpleObjectProperty<>(false);
 
     private final Property<Image> imageCoverProperty = new SimpleObjectProperty<>(
@@ -90,7 +92,7 @@ public class MainViewModel implements ViewModel {
 
     private final Command playPauseCommand = new PlayPauseCommand(mediaPlayerProperty, playButtonTextProperty);
     private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayerProperty, selectedVolumeProperty);
-    private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayerProperty, muteButtonTextProperty);
+    private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayerProperty, muteStatusProperty, muteButtonTextProperty);
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayerProperty, selectedProgressProperty);
     private final Command repeatAudioCommand = new RepeatAudioCommand(mediaPlayerProperty, repeatStatusProperty, repeatButtonTextProperty);
 

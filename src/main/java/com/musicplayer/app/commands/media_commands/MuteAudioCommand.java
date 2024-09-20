@@ -8,19 +8,19 @@ import javafx.scene.media.MediaPlayer;
 
 public class MuteAudioCommand extends DelegateCommand {
 
-    private static void mute(MediaPlayer mediaPlayer, StringProperty muteButtonText) {
+    private static void mute(MediaPlayer mediaPlayer, Property<Boolean> muteStatusProperty, StringProperty muteButtonText) {
 
-        boolean isMuted = mediaPlayer.isMute();
+        muteStatusProperty.setValue( !muteStatusProperty.getValue() );
 
-        muteButtonText.setValue(!isMuted ? "Вкл звук" : "Выкл звук");
-        mediaPlayer.setMute(!isMuted);
+        muteButtonText.setValue(muteStatusProperty.getValue() ? "Вкл звук" : "Выкл звук");
+        mediaPlayer.setMute(muteStatusProperty.getValue());
     }
 
-    public MuteAudioCommand(Property<MediaPlayer> mediaPlayer, StringProperty muteButtonText) {
+    public MuteAudioCommand(Property<MediaPlayer> mediaPlayer, Property<Boolean> muteStatusProperty, StringProperty muteButtonText) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                mute(mediaPlayer.getValue(), muteButtonText);
+                mute(mediaPlayer.getValue(), muteStatusProperty, muteButtonText);
             }
         });
     }

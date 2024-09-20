@@ -28,6 +28,7 @@ public class MediaListeners {
     private StringProperty timePositionTextProperty;
     private StringProperty timeDurationTextProperty;
     private Property<Number> selectedProgressProperty;
+    private final Property<Boolean> muteStatusProperty;
     private final Property<Boolean> repeatStatusProperty;
     private final Property<Number> selectedVolumeProperty;
     private final StringProperty playButtonTextProperty;
@@ -72,6 +73,7 @@ public class MediaListeners {
         public void run() {
             metaDataHash.clear();
             playButtonTextProperty.setValue("||");
+            mediaPlayerProperty.getValue().setMute( muteStatusProperty.getValue() );
             mediaPlayerProperty.getValue().setVolume( selectedVolumeProperty.getValue().floatValue() / 100 );
         }
     };
@@ -94,6 +96,7 @@ public class MediaListeners {
         this.playButtonTextProperty = mainViewModel.getPlayButtonTextProperty();
         this.selectedProgressProperty = mainViewModel.getSelectedProgressProperty();
         this.selectedVolumeProperty = mainViewModel.getSelectedVolumeProperty();
+        this.muteStatusProperty = mainViewModel.getMuteStatusProperty();
         this.repeatStatusProperty = mainViewModel.getRepeatStatusProperty();
 
         Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
