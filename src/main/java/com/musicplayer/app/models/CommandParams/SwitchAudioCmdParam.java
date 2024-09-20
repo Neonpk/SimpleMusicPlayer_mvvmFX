@@ -2,7 +2,6 @@ package com.musicplayer.app.models.CommandParams;
 
 import com.musicplayer.app.models.Track.Track;
 import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
@@ -12,7 +11,6 @@ import javafx.util.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
