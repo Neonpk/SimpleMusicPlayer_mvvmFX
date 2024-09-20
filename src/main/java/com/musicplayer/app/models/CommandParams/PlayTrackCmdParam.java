@@ -1,30 +1,30 @@
 package com.musicplayer.app.models.CommandParams;
 
+import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.Track.Track;
 import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
 import javafx.util.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 @SuppressWarnings("all")
-public class SwitchAudioCmdParam {
+public class PlayTrackCmdParam {
     private final List<Track> trackList;
+    private final Property<Track> selectedTrackProperty;
+    private final Property<Number> selectedAudioIndexProperty;
+    private final Property<Playlist> selectedPlaylistProperty;
     private final Property<Media> mediaProperty;
     private final Property<MediaPlayer> mediaPlayerProperty;
-    private final Property<Number> selectedAudioIndex;
-    private final Runnable onReadyMediaListener;
-    private final ChangeListener<Duration> durationChangeListener;
-    private final MapChangeListener<String, Object> metaDataChangeListenger;
-    private final Runnable onEndMediaListener;
+    private final Property<MapChangeListener<String, Object>> metaDataChangeListener;
+    private final Property<ChangeListener<Duration>> durationChangeListener;
+    private final Property<Runnable> onReadyMediaListener;
+    private final Property<Runnable> onEndMediaListener;
 }

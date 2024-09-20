@@ -1,9 +1,11 @@
 package com.musicplayer.app.models;
 
-import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.SwitchNextAudioCommand;
 import com.musicplayer.app.commands.media_commands.SwitchPrevAudioCommand;
 import com.musicplayer.app.models.CommandParams.SwitchAudioCmdParam;
+import com.musicplayer.app.models.Track.Track;
+import com.musicplayer.app.models.Track.TrackMetadataListener;
+import com.musicplayer.app.models.Track.TrackMetadataListenerParam;
 import com.musicplayer.app.viewmodels.MainViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.Property;
@@ -18,99 +20,102 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class MediaListeners {
 
-    private StringProperty artistText;
-    private StringProperty titleText;
-    private Property<Image> imageCover;
-    private StringProperty fileNameText;
-    private Property<Media> media;
-    private Property<MediaPlayer> mediaPlayer;
-    private Property<Boolean> sliderProgressUpdate;
-    private StringProperty timePositionText;
-    private StringProperty timeDurationText;
-    private Property<Number> selectedProgress;
-    private final Property<Boolean> repeatStatus;
+    private Property<MediaPlayer> mediaPlayerProperty;
+    private Property<Boolean> sliderProgressUpdateProperty;
+    private StringProperty timePositionTextProperty;
+    private StringProperty timeDurationTextProperty;
+    private Property<Number> selectedProgressProperty;
+    private final Property<Boolean> repeatStatusProperty;
+    private final Property<Number> selectedVolumeProperty;
+    private final StringProperty playButtonTextProperty;
 
     @Getter
     private final Command switchNextAudioCommand;
     @Getter
     private final Command switchPrevAudioCommand;
 
-    private final Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
-    private final HashMap<String, Object> metaDataHash = new HashMap<>();
+    @Getter
+    private final MapChangeListener<String, Object> metaDataChangeListener;
 
     @Getter
-    private final MapChangeListener<String, Object> metaDataChangeListenger = ch -> {
-        if (ch.wasAdded()) {
-            metaDataHash.put(String.valueOf(ch.getKey()), ch.getValueAdded());
-
-            artistText.setValue( metaDataHash.getOrDefault("artist", "Неизвестный артист").toString() );
-            titleText.setValue( metaDataHash.getOrDefault("title", "Неизвестный заголовок").toString() );
-            imageCover.setValue( (Image) metaDataHash.getOrDefault("image", defaultCover ) );
-
-            if(ch.getKey().equals("raw metadata"))
-                fileNameText.setValue( media.getValue().getSource().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1") );
-        }
-    };
+    private final HashMap<String, Object> metaDataHash = new HashMap<>();
 
     @Getter
     private final ChangeListener<Duration> durationChangeListener = (_, _, newValue) -> {
 
-        sliderProgressUpdate.setValue(true);
+        sliderProgressUpdateProperty.setValue(true);
 
         try {
-            Duration duration = mediaPlayer.getValue().getTotalDuration();
+            Duration duration = mediaPlayerProperty.getValue().getTotalDuration();
             double durationSeconds = duration.toSeconds();
             double durationMinutes = duration.toMinutes();
 
             double posSeconds = newValue.toSeconds();
             double posMinutes = newValue.toMinutes();
 
-            timePositionText.setValue(String.format("%02d:%02d", (int) posMinutes % 60, (int) posSeconds % 60));
-            timeDurationText.setValue(String.format("%02d:%02d", (int) durationMinutes % 60, (int) durationSeconds % 60));
+            timePositionTextProperty.setValue(String.format("%02d:%02d", (int) posMinutes % 60, (int) posSeconds % 60));
+            timeDurationTextProperty.setValue(String.format("%02d:%02d", (int) durationMinutes % 60, (int) durationSeconds % 60));
 
-            selectedProgress.setValue(posSeconds / durationSeconds * 100);
+            selectedProgressProperty.setValue(posSeconds / durationSeconds * 100);
         } finally {
-            sliderProgressUpdate.setValue(false);
+            sliderProgressUpdateProperty.setValue(false);
         }
 
+    };
+
+    @Getter
+    private final Runnable onReadyMediaListener = new Runnable() {
+        @Override
+        public void run() {
+            metaDataHash.clear();
+            playButtonTextProperty.setValue("||");
+            mediaPlayerProperty.getValue().setVolume( selectedVolumeProperty.getValue().floatValue() / 100 );
+        }
     };
 
     @Getter
     private final Runnable onEndMediaListener = new Runnable() {
         @Override
         public void run() {
-            boolean isRepeat = repeatStatus.getValue();
+            boolean isRepeat = repeatStatusProperty.getValue();
             if(!isRepeat) switchNextAudioCommand.execute();
         }
     };
 
     public MediaListeners(MainViewModel mainViewModel) {
 
-        this.artistText = mainViewModel.getArtistTextProperty();
-        this.titleText = mainViewModel.getTitleTextProperty();
-        this.imageCover = mainViewModel.getImageCoverProperty();
-        this.fileNameText = mainViewModel.getFileNameTextProperty();
-        this.media = mainViewModel.getMediaProperty();
-        this.mediaPlayer = mainViewModel.getMediaPlayerProperty();
-        this.sliderProgressUpdate = mainViewModel.getSliderProgressUpdateProperty();
-        this.timePositionText = mainViewModel.getTimePositionTextProperty();
-        this.timeDurationText = mainViewModel.getTimeDurationTextProperty();
-        this.selectedProgress = mainViewModel.getSelectedProgressProperty();
-        this.repeatStatus = mainViewModel.getRepeatStatusProperty();
+        this.mediaPlayerProperty = mainViewModel.getMediaPlayerProperty();
+        this.sliderProgressUpdateProperty = mainViewModel.getSliderProgressUpdateProperty();
+        this.timePositionTextProperty = mainViewModel.getTimePositionTextProperty();
+        this.timeDurationTextProperty = mainViewModel.getTimeDurationTextProperty();
+        this.playButtonTextProperty = mainViewModel.getPlayButtonTextProperty();
+        this.selectedProgressProperty = mainViewModel.getSelectedProgressProperty();
+        this.selectedVolumeProperty = mainViewModel.getSelectedVolumeProperty();
+        this.repeatStatusProperty = mainViewModel.getRepeatStatusProperty();
 
-        List<String> fileNamesList = mainViewModel.getFileNamesList();
-        StringProperty playButtonTextProperty = mainViewModel.getPlayButtonTextProperty();
-        Property<Number> selectedVolumeProperty = mainViewModel.getSelectedVolumeProperty();
         Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
+        List<Track> trackList = mainViewModel.getTrackList();
+        StringProperty artistTextProperty = mainViewModel.getArtistTextProperty();
+        StringProperty titleTextProperty = mainViewModel.getTitleTextProperty();
+        Property<Image> imageCoverProperty = mainViewModel.getImageCoverProperty();
+        Property<Media> mediaProperty = mainViewModel.getMediaProperty();
+
+        metaDataChangeListener = new TrackMetadataListener(
+                new TrackMetadataListenerParam(titleTextProperty, artistTextProperty, imageCoverProperty, metaDataHash)
+        ).getMetaDataChangeListenger();
+
+        mainViewModel.getMetaDataChangeListener().setValue( metaDataChangeListener );
+        mainViewModel.getDurationChangeListener().setValue( durationChangeListener );
+        mainViewModel.getOnReadyMediaListener().setValue( onReadyMediaListener );
+        mainViewModel.getOnEndMediaListener().setValue( onEndMediaListener );
 
         SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(
-                fileNamesList, media, mediaPlayer, metaDataHash,
-                playButtonTextProperty, selectedVolumeProperty, selectedAudioIndexProperty,
-                durationChangeListener, metaDataChangeListenger, onEndMediaListener
+                trackList, mediaProperty, mediaPlayerProperty,
+                selectedAudioIndexProperty, onReadyMediaListener,
+                durationChangeListener, metaDataChangeListener, onEndMediaListener
         );
 
         this.switchNextAudioCommand = new SwitchNextAudioCommand(switchAudioCmdParam);

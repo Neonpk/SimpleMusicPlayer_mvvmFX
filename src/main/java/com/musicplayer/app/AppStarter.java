@@ -3,7 +3,7 @@ package com.musicplayer.app;
 import com.musicplayer.app.models.Playlist.PlaylistsJsonDeserializer;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
-import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.services.MediaProvider;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.viewmodels.MainViewModel;
 import com.musicplayer.app.views.MainView;
@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AppStarter extends MvvmfxEasyDIApplication {
 
@@ -26,8 +27,19 @@ public class AppStarter extends MvvmfxEasyDIApplication {
     @Override
     public void initEasyDi(EasyDI context) throws IOException {
 
-        context.bindInstance(PlaylistsProvider.class, new PlaylistsProvider(FXCollections.observableArrayList()));
         context.bindInstance(NavigationService.class, new NavigationService(new SimpleObjectProperty<>()));
+
+        context.bindInstance(MediaProvider.class, new MediaProvider(
+                FXCollections.observableArrayList(),
+                new ArrayList<>(),
+                new SimpleObjectProperty<>(0),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>()
+        ));
 
         context.bindInstance(PlaylistJsonProvider.class, new PlaylistJsonProvider(
                 new PlaylistsJsonDeserializer("/home/chichard/Desktop/playlist.json")
@@ -35,7 +47,7 @@ public class AppStarter extends MvvmfxEasyDIApplication {
 
         context.bindInstance(VmProvider.class, new VmProvider(
                 context.getInstance(PlaylistJsonProvider.class),
-                context.getInstance(PlaylistsProvider.class),
+                context.getInstance(MediaProvider.class),
                 context.getInstance(NavigationService.class)
         ));
 

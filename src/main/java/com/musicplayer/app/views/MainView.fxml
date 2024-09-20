@@ -65,7 +65,6 @@
                     <VBox alignment="CENTER_LEFT">
                         <Label text="Артист" fx:id="labelArtist"/>
                         <Label text="Трек" fx:id="labelTitle" />
-                        <Label text="Путь" fx:id="labelFileName" />
                     </VBox>
 
                 </FlowPane>

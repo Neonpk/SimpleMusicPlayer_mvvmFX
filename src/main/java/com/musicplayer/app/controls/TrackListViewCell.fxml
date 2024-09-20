@@ -12,7 +12,8 @@
            <left>
                <FlowPane hgap="15" alignment="CENTER_LEFT" maxWidth="300">
 
-                   <ImageView fitHeight="70" fitWidth="70" style="-fx-background-radius: 20;" fx:id="imageViewCover" />
+                   <ImageView fitHeight="70" fitWidth="70" fx:id="imageViewCover"
+                              style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 20, 0, 0, 0);" />
 
                    <VBox alignment="CENTER_LEFT">
                        <Label text="Артист" fx:id="labelArtist" style="-fx-text-fill: black;"/>

@@ -65,9 +65,6 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     Label labelTitle;
 
     @FXML
-    Label labelFileName;
-
-    @FXML
     ImageView imageViewCover;
 
     @Override
@@ -86,7 +83,6 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
 
         labelArtist.textProperty().bindBidirectional( viewModel.getArtistTextProperty() );
         labelTitle.textProperty().bindBidirectional( viewModel.getTitleTextProperty() );
-        labelFileName.textProperty().bindBidirectional( viewModel.getFileNameTextProperty() );
 
         muteButton.textProperty().bindBidirectional( viewModel.getMuteButtonTextProperty() );
         repeatButton.textProperty().bindBidirectional( viewModel.getRepeatButtonTextProperty() );

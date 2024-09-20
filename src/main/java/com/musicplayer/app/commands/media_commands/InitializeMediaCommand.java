@@ -1,6 +1,7 @@
 package com.musicplayer.app.commands.media_commands;
 
 import com.musicplayer.app.models.MediaListeners;
+import com.musicplayer.app.models.Track.Track;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
@@ -12,24 +13,24 @@ import java.util.List;
 
 public class InitializeMediaCommand extends DelegateCommand {
 
-    private static void initializeMedia(List<String> fileNamesList,
+    private static void initializeMedia(List<Track> trackList,
                                         Property<Media> mediaProperty,
                                         Property<MediaPlayer> mediaPlayerProperty,
                                         MediaListeners mediaListeners)
     {
-        fileNamesList.add(new File("/home/chichard/Музыка/timberlake.mp3").toURI().toString());
-        fileNamesList.add(new File("/home/chichard/Музыка/lalala.mp3").toURI().toString());
-        fileNamesList.add(new File("/home/chichard/Музыка/2pac_shorty.mp3").toURI().toString());
 
-        mediaProperty.setValue(new Media(fileNamesList.getFirst()));
+        Track track = trackList.getFirst();
+        String fileName = new File(track.getFileName()).toURI().toString();
+
+        mediaProperty.setValue(new Media(fileName));
         mediaPlayerProperty.setValue(new MediaPlayer(mediaProperty.getValue()));
 
-        mediaProperty.getValue().getMetadata().addListener(mediaListeners.getMetaDataChangeListenger());
+        mediaProperty.getValue().getMetadata().addListener(mediaListeners.getMetaDataChangeListener());
         mediaPlayerProperty.getValue().currentTimeProperty().addListener(mediaListeners.getDurationChangeListener());
         mediaPlayerProperty.getValue().setOnEndOfMedia(mediaListeners.getOnEndMediaListener());
     }
 
-    public InitializeMediaCommand(List<String> fileNamesList,
+    public InitializeMediaCommand(List<Track> trackList,
                                   Property<Media> mediaProperty,
                                   Property<MediaPlayer> mediaPlayerProperty,
                                   MediaListeners mediaListeners)
@@ -37,7 +38,7 @@ public class InitializeMediaCommand extends DelegateCommand {
         super(() -> new Action() {
             @Override
             protected void action()  {
-                initializeMedia(fileNamesList, mediaProperty, mediaPlayerProperty, mediaListeners);
+                initializeMedia(trackList, mediaProperty, mediaPlayerProperty, mediaListeners);
             }
         });
     }

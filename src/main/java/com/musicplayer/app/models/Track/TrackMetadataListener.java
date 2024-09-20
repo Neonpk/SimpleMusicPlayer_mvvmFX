@@ -24,6 +24,8 @@ public class TrackMetadataListener {
         StringProperty titleProperty = trackMetadataListenerParam.getTitleProperty();
         Property<Image> imageCoverProperty = trackMetadataListenerParam.getImageCoverProperty();
 
+        metaDataHash.clear();
+
         metaDataChangeListenger = ch -> {
             if (ch.wasAdded()) {
                 metaDataHash.put(String.valueOf(ch.getKey()), ch.getValueAdded());

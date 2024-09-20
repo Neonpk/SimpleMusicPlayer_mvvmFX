@@ -3,7 +3,7 @@ import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.CommandParams.SavePlaylistCmdParam;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
-import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.services.MediaProvider;
 import com.musicplayer.app.viewmodels.PlaylistViewModel;
 import com.musicplayer.app.views.PlaylistView;
 import de.saxsys.mvvmfx.FluentViewLoader;
@@ -21,7 +21,7 @@ public class SavePlaylistCommand extends DelegateCommand {
     private static void saveNewPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
 
         // Providers
-        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
+        MediaProvider playlistsProvider = vmProvider.getMediaProvider();
         NavigationService navService = vmProvider.getNavigationService();
 
         // Params
@@ -50,7 +50,7 @@ public class SavePlaylistCommand extends DelegateCommand {
 
         // Providers
         NavigationService navService = vmProvider.getNavigationService();
-        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
+        MediaProvider mediaProvider = vmProvider.getMediaProvider();
 
         // Params
         StringProperty playListName = savePlaylistCmdParam.getPlayListName();
@@ -66,7 +66,7 @@ public class SavePlaylistCommand extends DelegateCommand {
         Playlist playlist = selectedPlaylist.getValue();
         playlist.setName(playListName.getValue());
 
-        playlistsProvider.getPlaylists().set( id, playlist );
+        mediaProvider.getPlaylists().set( id, playlist );
 
         var fxmlView = FluentViewLoader.fxmlView(PlaylistView.class);
         var viewTuple = fxmlView.viewModel( new PlaylistViewModel(vmProvider, selectedPlaylist) );

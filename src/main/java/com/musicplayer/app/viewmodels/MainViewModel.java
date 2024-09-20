@@ -12,124 +12,95 @@ import com.musicplayer.app.models.Playlist.PlaylistCollectionListener;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
-import com.musicplayer.app.services.PlaylistsProvider;
+import com.musicplayer.app.services.MediaProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.image.Image;
+import com.musicplayer.app.models.Track.Track;
+import javafx.util.Duration;
 import lombok.Getter;
 
 import java.io.IOException;
 import java.util.*;
 
+@Getter
 public class MainViewModel implements ViewModel {
 
     // Properties (fields)
-
-    @Getter
     private final Property<Number> selectedAudioIndexProperty = new SimpleObjectProperty<>(0);
 
-    @Getter
     private final Property<Number> selectedVolumeProperty = new SimpleObjectProperty<>(50.0f);
 
-    @Getter
     private final Property<Number> selectedProgressProperty = new SimpleObjectProperty<>(0.0f);
 
-    @Getter
     private final StringProperty timePositionTextProperty = new SimpleStringProperty("00:00");
 
-    @Getter
     private final StringProperty timeDurationTextProperty = new SimpleStringProperty("00:00");
 
-    @Getter
     private final StringProperty artistTextProperty = new SimpleStringProperty("Неизвестный артист");
 
-    @Getter
     private final StringProperty titleTextProperty = new SimpleStringProperty("Неизвестный заголовок");
 
-    @Getter
-    private final StringProperty fileNameTextProperty = new SimpleStringProperty("Путь не найден.");
-
-    @Getter
     private final StringProperty playButtonTextProperty = new SimpleStringProperty(">");
 
-    @Getter
     private final StringProperty muteButtonTextProperty = new SimpleStringProperty("Выкл звук");
 
-    @Getter
     private final StringProperty repeatButtonTextProperty = new SimpleStringProperty("Повторять");
 
-    @Getter
     private final Property<Boolean> sliderProgressUpdateProperty = new SimpleObjectProperty<>(false);
 
-    @Getter
     private final Property<Boolean> repeatStatusProperty = new SimpleObjectProperty<>(false);
 
-    @Getter
     private final Property<Image> imageCoverProperty = new SimpleObjectProperty<>(
             new Image( Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString() )
     );
 
-    @Getter
     private final Property<Media> mediaProperty = new SimpleObjectProperty<>();
 
-    @Getter
     private final Property<MediaPlayer> mediaPlayerProperty = new SimpleObjectProperty<>();
 
-    @Getter
     private final Property<ContextMenu> contextMenuProperty = new SimpleObjectProperty<>();
 
-    @Getter
     private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
 
-    @Getter
     private final Property<Node> selectedView = new SimpleObjectProperty<>();
+
+    // Properties -> Listeners
+
+    private final Property<MapChangeListener<String, Object>> metaDataChangeListener = new SimpleObjectProperty<>();
+    private final Property<ChangeListener<Duration>> durationChangeListener = new SimpleObjectProperty<>();
+    private final Property<Runnable> onReadyMediaListener = new SimpleObjectProperty<>();
+    private final Property<Runnable> onEndMediaListener = new SimpleObjectProperty<>();
 
     // Fields
 
-    @Getter
     private final ObservableList<Playlist> playlists;
 
-    @Getter
-    private final List<String> fileNamesList = new ArrayList<>();
-
-    // Fields => Listeners
-
-    private final MediaListeners mediaListeners = new MediaListeners(this);
+    private final List<Track> trackList;
 
     // Commands
 
-    @Getter
     private final Command playPauseCommand = new PlayPauseCommand(mediaPlayerProperty, playButtonTextProperty);
-    @Getter
     private final Command volumeControlCommand = new VolumeControlCommand(mediaPlayerProperty, selectedVolumeProperty);
-    @Getter
     private final Command muteAudioCommand = new MuteAudioCommand(mediaPlayerProperty, muteButtonTextProperty);
-    @Getter
     private final Command seekAudioCommand = new SeekAudioCommand(mediaPlayerProperty, selectedProgressProperty);
-    @Getter
     private final Command repeatAudioCommand = new RepeatAudioCommand(mediaPlayerProperty, repeatStatusProperty, repeatButtonTextProperty);
 
-    @Getter
-    private final Command switchNextAudioCommand = mediaListeners.getSwitchNextAudioCommand();
-    @Getter
-    private final Command switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
+    // Commands initialized in constructor
 
-    @Getter
+    private final Command switchNextAudioCommand;
+    private final Command switchPrevAudioCommand;
     private final Command selectedPlaylistCommand;
-
-    @Getter
     private final Command playlistCreateCommand;
-
-    @Getter
     private final Command playlistEditCommand;
-
-    @Getter
     private final Command deletePlaylistCommand;
 
     // Constructor
@@ -137,11 +108,27 @@ public class MainViewModel implements ViewModel {
     public MainViewModel(VmProvider vmProvider) throws IOException {
 
         PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
-        PlaylistsProvider playlistsProvider = vmProvider.getPlaylistsProvider();
+        MediaProvider mediaProvider = vmProvider.getMediaProvider();
         NavigationService navigationService = vmProvider.getNavigationService();
 
-        playlists = playlistsProvider.getPlaylists();
+        this.metaDataChangeListener.bindBidirectional( vmProvider.getMediaProvider().getMetaDataChangeListener() );
+        this.durationChangeListener.bindBidirectional( vmProvider.getMediaProvider().getDurationChangeListener() );
+        this.onReadyMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnReadyMediaListener() );
+        this.onEndMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnEndMediaListener() );
+
+        this.mediaProperty.bindBidirectional(mediaProvider.getMediaProperty());
+        this.mediaPlayerProperty.bindBidirectional(mediaProvider.getMediaPlayerProperty());
+        this.selectedAudioIndexProperty.bindBidirectional(mediaProvider.getSelectedAudioIndexProperty());
+
         navigationService.bindBidirectional(selectedView);
+
+        playlists = mediaProvider.getPlaylists();
+        trackList = mediaProvider.getTrackList();
+
+        MediaListeners mediaListeners = new MediaListeners(this);
+
+        switchNextAudioCommand = mediaListeners.getSwitchNextAudioCommand();
+        switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
         selectedPlaylistCommand = new SelectedPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
         playlistCreateCommand = new CreatePlaylistCommand(vmProvider, selectedView);
@@ -149,9 +136,11 @@ public class MainViewModel implements ViewModel {
         deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());
+        trackList.addAll(playlists.getFirst().getTracks());
+
         playlists.addListener(new PlaylistCollectionListener(playlistJsonProvider).getPlaylistListener());
 
-        new InitializeMediaCommand(fileNamesList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
+        new InitializeMediaCommand(trackList, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }
 
 }

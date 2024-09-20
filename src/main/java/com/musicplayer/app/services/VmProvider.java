@@ -9,6 +9,6 @@ import lombok.Getter;
 @SuppressWarnings("all")
 public class VmProvider {
     private final PlaylistJsonProvider playlistJsonProvider;
-    private final PlaylistsProvider playlistsProvider;
+    private final MediaProvider mediaProvider;
     private final NavigationService navigationService;
 }

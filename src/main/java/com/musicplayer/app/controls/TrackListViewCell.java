@@ -3,14 +3,11 @@ package com.musicplayer.app.controls;
 import com.musicplayer.app.models.Track.Track;
 import com.musicplayer.app.models.Track.TrackMetadataListener;
 import com.musicplayer.app.models.Track.TrackMetadataListenerParam;
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.image.ImageView;
 
@@ -38,6 +35,10 @@ public class TrackListViewCell extends ListCell<Track> {
     @FXML
     private ImageView imageViewCover;
 
+    // Custom Fields
+
+    private Media media;
+
     public TrackListViewCell() {
         loadFXML();
     }
@@ -61,15 +62,22 @@ public class TrackListViewCell extends ListCell<Track> {
 
         if ( !empty && !Objects.equals(item, null) )
         {
-            StringProperty titleProperty = labelTitle.textProperty();
-            StringProperty artistProperty = labelArtist.textProperty();
-            Property<Image> imageCoverProperty = imageViewCover.imageProperty();
 
             TrackMetadataListener trackMetadataListener = new TrackMetadataListener(
-                    new TrackMetadataListenerParam(titleProperty, artistProperty, imageCoverProperty, item.getMetaData())
+                    new TrackMetadataListenerParam(
+                            labelTitle.textProperty(),
+                            labelArtist.textProperty(),
+                            imageViewCover.imageProperty(),
+                            item.getMetaData()
+                    )
             );
 
-            Media media = new Media(new File(item.getFileName()).toURI().toString());
+            if(media != null) {
+                media.getMetadata().removeListener(trackMetadataListener.getMetaDataChangeListenger());
+                System.gc();
+            }
+
+            media = new Media(new File(item.getFileName()).toURI().toString());
             media.getMetadata().addListener(trackMetadataListener.getMetaDataChangeListenger());
 
             String addedDateText = new SimpleDateFormat("dd.MM.yyyy\nHH:mm:ss").

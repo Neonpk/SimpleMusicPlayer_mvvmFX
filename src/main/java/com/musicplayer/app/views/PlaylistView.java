@@ -49,6 +49,7 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
         TrackContextMenu trackContextMenu = new TrackContextMenu();
         viewModel.getContextMenuProperty().setValue( trackContextMenu.getContextMenu() );
         trackContextMenu.getDeleteTrack().setOnAction( (_) -> viewModel.getDeleteTrackCommand().execute() );
+        trackContextMenu.getPlayTrack().setOnAction( (_) -> viewModel.getPlayTrackCommand().execute()  );
     }
 
 }
