@@ -10,14 +10,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.util.List;
 
-public class PlayTrackCommand extends DelegateCommand {
+public class PlaySelectedTrackCommand extends DelegateCommand {
 
-    private static List<Track> trackListQueue;
+    private static List<Track> playlistTracks;
 
     private static Property<Track> selectedTrackProperty;
     private static Property<Number> selectedAudioIndexProperty;
@@ -28,23 +29,41 @@ public class PlayTrackCommand extends DelegateCommand {
     private static ChangeListener<Duration> durationChangeListener;
     private static MapChangeListener<String, Object> metaDataChangeListener;
     private static Runnable onReadyMediaListener;
+    private static Runnable onStoppedMediaListener;
     private static Runnable onEndMediaListener;
 
     private static void disposeOldMedia() {
 
-        Media oldMedia = mediaProperty.getValue();
-        MediaPlayer oldMediaPlayer = mediaPlayerProperty.getValue();
-        oldMedia.getMetadata().removeListener(metaDataChangeListener);
-        oldMediaPlayer.currentTimeProperty().removeListener(durationChangeListener);
-        oldMediaPlayer.setOnReady(null);
-        oldMediaPlayer.setOnEndOfMedia(null);
-        oldMediaPlayer.stop();
-        oldMediaPlayer.dispose();
+        Media oldMedia;
+        MediaPlayer oldMediaPlayer;
+
+        if((oldMedia = mediaProperty.getValue()) != null && (oldMediaPlayer = mediaPlayerProperty.getValue()) != null)
+        {
+            if(oldMediaPlayer.getStatus() == Status.STOPPED) {
+                return;
+            }
+
+            onStoppedMediaListener.run();
+            oldMedia.getMetadata().removeListener(metaDataChangeListener);
+            oldMediaPlayer.currentTimeProperty().removeListener(durationChangeListener);
+            oldMediaPlayer.setOnReady(null);
+            oldMediaPlayer.setOnEndOfMedia(null);
+            oldMediaPlayer.stop();
+            oldMediaPlayer.dispose();
+        }
+
     }
 
     private static void setNewMedia() {
 
-        String fileNameURI = new File(selectedTrackProperty.getValue().getFileName()).toURI().toString();
+        Track selectedTrack;
+
+        if((selectedTrack = selectedTrackProperty.getValue()) == null) {
+            System.out.println("Selected track not found.");
+            return;
+        }
+
+        String fileNameURI = new File(selectedTrack.getFileName()).toURI().toString();
 
         Media newMedia = new Media(fileNameURI);
         newMedia.getMetadata().addListener(metaDataChangeListener);
@@ -53,7 +72,7 @@ public class PlayTrackCommand extends DelegateCommand {
         newMediaPlayer.setOnReady(onReadyMediaListener);
         newMediaPlayer.setOnEndOfMedia(onEndMediaListener);
 
-        selectedAudioIndexProperty.setValue( trackListQueue.indexOf(selectedTrackProperty.getValue()) );
+        selectedAudioIndexProperty.setValue( playlistTracks.indexOf(selectedTrackProperty.getValue()) );
 
         mediaProperty.setValue(newMedia);
         mediaPlayerProperty.setValue(newMediaPlayer);
@@ -63,7 +82,7 @@ public class PlayTrackCommand extends DelegateCommand {
 
         Property<Playlist> selectedPlaylistProperty = playTrackCmdParam.getSelectedPlaylistProperty();
 
-        trackListQueue = selectedPlaylistProperty.getValue().getTracks();
+        playlistTracks = selectedPlaylistProperty.getValue().getTracks();
         selectedTrackProperty = playTrackCmdParam.getSelectedTrackProperty();
         selectedAudioIndexProperty = playTrackCmdParam.getSelectedAudioIndexProperty();
         mediaProperty = playTrackCmdParam.getMediaProperty();
@@ -73,13 +92,14 @@ public class PlayTrackCommand extends DelegateCommand {
         metaDataChangeListener = playTrackCmdParam.getMetaDataChangeListener().getValue();
         durationChangeListener = playTrackCmdParam.getDurationChangeListener().getValue();
         onReadyMediaListener = playTrackCmdParam.getOnReadyMediaListener().getValue();
+        onStoppedMediaListener = playTrackCmdParam.getOnStoppedMediaListener().getValue();
         onEndMediaListener = playTrackCmdParam.getOnEndMediaListener().getValue();
 
         // TrackList Queue
-        List<Track> trackList = playTrackCmdParam.getTrackList();
+        List<Track> trackListQueue = playTrackCmdParam.getTrackListQueue();
 
-        trackList.clear();
-        trackList.addAll(trackListQueue);
+        trackListQueue.clear();
+        trackListQueue.addAll(playlistTracks);
 
         disposeOldMedia();
         setNewMedia();
@@ -87,7 +107,7 @@ public class PlayTrackCommand extends DelegateCommand {
         mediaPlayerProperty.getValue().play();
     }
 
-    public PlayTrackCommand(PlayTrackCmdParam playTrackCmdParam) {
+    public PlaySelectedTrackCommand(PlayTrackCmdParam playTrackCmdParam) {
         super(() -> new Action() {
             @Override
             protected void action() {

@@ -18,6 +18,10 @@
     <top>
         <BorderPane BorderPane.alignment="CENTER">
 
+            <left>
+                <Button text="Прослушивать" fx:id="listenPlaylistButton" />
+            </left>
+
             <center>
                 <Label fx:id="playlistNameLabel" BorderPane.alignment="CENTER">
                     <padding>

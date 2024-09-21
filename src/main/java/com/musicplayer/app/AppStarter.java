@@ -1,5 +1,6 @@
 package com.musicplayer.app;
 
+import com.musicplayer.app.models.CacheLoader;
 import com.musicplayer.app.models.Playlist.PlaylistsJsonDeserializer;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.PlaylistJsonProvider;
@@ -38,11 +39,12 @@ public class AppStarter extends MvvmfxEasyDIApplication {
                 new SimpleObjectProperty<>(),
                 new SimpleObjectProperty<>(),
                 new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
                 new SimpleObjectProperty<>()
         ));
 
         context.bindInstance(PlaylistJsonProvider.class, new PlaylistJsonProvider(
-                new PlaylistsJsonDeserializer("/home/chichard/Desktop/playlist.json")
+                new PlaylistsJsonDeserializer(CacheLoader.loadJsonCache("playlists.json"))
         ) );
 
         context.bindInstance(VmProvider.class, new VmProvider(

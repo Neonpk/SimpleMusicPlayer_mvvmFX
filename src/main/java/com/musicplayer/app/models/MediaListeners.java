@@ -1,5 +1,6 @@
 package com.musicplayer.app.models;
 
+import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.SwitchNextAudioCommand;
 import com.musicplayer.app.commands.media_commands.SwitchPrevAudioCommand;
 import com.musicplayer.app.models.CommandParams.SwitchAudioCmdParam;
@@ -20,6 +21,7 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MediaListeners {
 
@@ -32,6 +34,12 @@ public class MediaListeners {
     private final Property<Boolean> repeatStatusProperty;
     private final Property<Number> selectedVolumeProperty;
     private final StringProperty playButtonTextProperty;
+
+    private final StringProperty artistTextProperty;
+    private final StringProperty titleTextProperty;
+    private final Property<Image> imageCoverProperty;
+
+    private final Image defaultCover = new Image( Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString() );
 
     @Getter
     private final Command switchNextAudioCommand;
@@ -79,6 +87,22 @@ public class MediaListeners {
     };
 
     @Getter
+    private final Runnable onStoppedMediaListener = new Runnable() {
+        @Override
+        public void run() {
+            artistTextProperty.setValue("Неизвестный артист");
+            titleTextProperty.setValue("Неизвестный заголовок");
+            imageCoverProperty.setValue( defaultCover );
+
+            timePositionTextProperty.setValue("00:00");
+            timeDurationTextProperty.setValue("00:00");
+            selectedProgressProperty.setValue(0);
+
+            playButtonTextProperty.setValue(">");
+        }
+    };
+
+    @Getter
     private final Runnable onEndMediaListener = new Runnable() {
         @Override
         public void run() {
@@ -99,11 +123,12 @@ public class MediaListeners {
         this.muteStatusProperty = mainViewModel.getMuteStatusProperty();
         this.repeatStatusProperty = mainViewModel.getRepeatStatusProperty();
 
+        this.artistTextProperty = mainViewModel.getArtistTextProperty();
+        this.titleTextProperty = mainViewModel.getTitleTextProperty();
+        this.imageCoverProperty = mainViewModel.getImageCoverProperty();
+
         Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
         List<Track> trackListQueue = mainViewModel.getTrackListQueue();
-        StringProperty artistTextProperty = mainViewModel.getArtistTextProperty();
-        StringProperty titleTextProperty = mainViewModel.getTitleTextProperty();
-        Property<Image> imageCoverProperty = mainViewModel.getImageCoverProperty();
         Property<Media> mediaProperty = mainViewModel.getMediaProperty();
 
         metaDataChangeListener = new TrackMetadataListener(
@@ -113,6 +138,7 @@ public class MediaListeners {
         mainViewModel.getMetaDataChangeListener().setValue( metaDataChangeListener );
         mainViewModel.getDurationChangeListener().setValue( durationChangeListener );
         mainViewModel.getOnReadyMediaListener().setValue( onReadyMediaListener );
+        mainViewModel.getOnStoppedMediaListener().setValue( onStoppedMediaListener );
         mainViewModel.getOnEndMediaListener().setValue( onEndMediaListener );
 
         SwitchAudioCmdParam switchAudioCmdParam = new SwitchAudioCmdParam(

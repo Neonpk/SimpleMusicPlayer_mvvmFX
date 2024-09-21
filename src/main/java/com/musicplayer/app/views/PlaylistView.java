@@ -30,26 +30,29 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
     @FXML
     private Button addTracksButton;
 
+    @FXML
+    private Button listenPlaylistButton;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         listViewTracks.setItems(viewModel.getFilteredTrackList());
         listViewTracks.contextMenuProperty().bindBidirectional(viewModel.getContextMenuProperty() );
         listViewTracks.setCellFactory( new TrackListViewCellFactory() );
-
         playlistNameLabel.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );
         searchTextField.textProperty().bindBidirectional( viewModel.getSearchTextProperty() );
 
         // Events
 
         addTracksButton.setOnAction((_) -> viewModel.getAddTracksCommand().execute());
+        listenPlaylistButton.setOnAction((_) -> viewModel.getPlayPlaylistTracksCommand().execute() );
         searchTextField.textProperty().addListener((_) -> viewModel.getSearchTracksCommand().execute() );
         listViewTracks.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> viewModel.getSelectedTrackProperty().setValue(newVal));
 
         TrackContextMenu trackContextMenu = new TrackContextMenu();
         viewModel.getContextMenuProperty().setValue( trackContextMenu.getContextMenu() );
         trackContextMenu.getDeleteTrack().setOnAction( (_) -> viewModel.getDeleteTrackCommand().execute() );
-        trackContextMenu.getPlayTrack().setOnAction( (_) -> viewModel.getPlayTrackCommand().execute()  );
+        trackContextMenu.getPlayTrack().setOnAction( (_) -> viewModel.getPlaySelectedTrackCommand().execute()  );
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuppressWarnings("all")
 public class PlayTrackCmdParam {
-    private final List<Track> trackList;
+    private final List<Track> trackListQueue;
     private final Property<Track> selectedTrackProperty;
     private final Property<Number> selectedAudioIndexProperty;
     private final Property<Playlist> selectedPlaylistProperty;
@@ -26,5 +26,6 @@ public class PlayTrackCmdParam {
     private final Property<MapChangeListener<String, Object>> metaDataChangeListener;
     private final Property<ChangeListener<Duration>> durationChangeListener;
     private final Property<Runnable> onReadyMediaListener;
+    private final Property<Runnable> onStoppedMediaListener;
     private final Property<Runnable> onEndMediaListener;
 }

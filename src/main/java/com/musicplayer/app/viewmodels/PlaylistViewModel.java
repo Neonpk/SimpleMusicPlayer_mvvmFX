@@ -1,9 +1,6 @@
 package com.musicplayer.app.viewmodels;
 
-import com.musicplayer.app.commands.track_commands.AddNewTracksCommand;
-import com.musicplayer.app.commands.track_commands.DeleteTrackCommand;
-import com.musicplayer.app.commands.track_commands.PlayTrackCommand;
-import com.musicplayer.app.commands.track_commands.SearchTracksCommand;
+import com.musicplayer.app.commands.track_commands.*;
 import com.musicplayer.app.models.CommandParams.DeleteTrackCmdParam;
 import com.musicplayer.app.models.CommandParams.PlayTrackCmdParam;
 import com.musicplayer.app.models.Playlist.Playlist;
@@ -41,9 +38,10 @@ public class PlaylistViewModel implements ViewModel {
     private final FilteredList<Track> filteredTrackList = new FilteredList<>(tracks, (_) -> true);
 
     private final Command deleteTrackCommand;
-    private final Command playTrackCommand;
+    private final Command playSelectedTrackCommand;
     private final Command addTracksCommand;
     private final Command searchTracksCommand;
+    private final Command playPlaylistTracksCommand;
 
     public PlaylistViewModel(VmProvider vmProvider, Property<Playlist> selectedPlaylistProperty) {
 
@@ -63,6 +61,7 @@ public class PlaylistViewModel implements ViewModel {
         Property<MapChangeListener<String, Object>> metaDataChangeListenerProperty = mediaProvider.getMetaDataChangeListener();
         Property<ChangeListener<Duration>> durationChangeListenerProperty = mediaProvider.getDurationChangeListener();
         Property<Runnable> onReadyMediaListenerProperty = mediaProvider.getOnReadyMediaListener();
+        Property<Runnable> onStoppedMediaListener = mediaProvider.getOnStoppedMediaListener();
         Property<Runnable> onEndMediaListenerProperty = mediaProvider.getOnEndMediaListener();
 
         int playlistId = selectedPlaylistProperty.getValue().getId();
@@ -73,12 +72,21 @@ public class PlaylistViewModel implements ViewModel {
         addTracksCommand = new AddNewTracksCommand(tracks);
         searchTracksCommand = new SearchTracksCommand(filteredTrackList, searchTextProperty);
 
-        playTrackCommand = new PlayTrackCommand(
+        playPlaylistTracksCommand = new PlayPlaylistTracksCommand(
+                new PlayTrackCmdParam(
+                        trackListQueue, null, selectedAudioIndexProperty,
+                        selectedPlaylistProperty, mediaProperty, mediaPlayerProperty,
+                        metaDataChangeListenerProperty, durationChangeListenerProperty,
+                        onReadyMediaListenerProperty, onStoppedMediaListener, onEndMediaListenerProperty
+                )
+        );
+
+        playSelectedTrackCommand = new PlaySelectedTrackCommand(
                 new PlayTrackCmdParam(
                         trackListQueue, selectedTrackProperty, selectedAudioIndexProperty,
                         selectedPlaylistProperty, mediaProperty, mediaPlayerProperty,
                         metaDataChangeListenerProperty, durationChangeListenerProperty,
-                        onReadyMediaListenerProperty, onEndMediaListenerProperty
+                        onReadyMediaListenerProperty, onStoppedMediaListener, onEndMediaListenerProperty
                 )
         );
 

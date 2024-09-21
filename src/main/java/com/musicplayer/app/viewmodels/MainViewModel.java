@@ -80,6 +80,7 @@ public class MainViewModel implements ViewModel {
     private final Property<MapChangeListener<String, Object>> metaDataChangeListener = new SimpleObjectProperty<>();
     private final Property<ChangeListener<Duration>> durationChangeListener = new SimpleObjectProperty<>();
     private final Property<Runnable> onReadyMediaListener = new SimpleObjectProperty<>();
+    private final Property<Runnable> onStoppedMediaListener = new SimpleObjectProperty<>();
     private final Property<Runnable> onEndMediaListener = new SimpleObjectProperty<>();
 
     // Fields
@@ -116,6 +117,7 @@ public class MainViewModel implements ViewModel {
         this.metaDataChangeListener.bindBidirectional( vmProvider.getMediaProvider().getMetaDataChangeListener() );
         this.durationChangeListener.bindBidirectional( vmProvider.getMediaProvider().getDurationChangeListener() );
         this.onReadyMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnReadyMediaListener() );
+        this.onStoppedMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnStoppedMediaListener() );
         this.onEndMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnEndMediaListener() );
 
         this.mediaProperty.bindBidirectional(mediaProvider.getMediaProperty());
@@ -138,11 +140,7 @@ public class MainViewModel implements ViewModel {
         deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());
-        trackListQueue.addAll(playlists.getFirst().getTracks());
-
         playlists.addListener(new PlaylistCollectionListener(playlistJsonProvider).getPlaylistListener());
-
-        new InitializeMediaCommand(trackListQueue, mediaProperty, mediaPlayerProperty, mediaListeners).execute();
     }
 
 }

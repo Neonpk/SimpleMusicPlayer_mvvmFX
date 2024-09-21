@@ -26,5 +26,6 @@ public class MediaProvider {
     private final Property<MapChangeListener<String, Object>> metaDataChangeListener;
     private final Property<ChangeListener<Duration>> durationChangeListener;
     private final Property<Runnable> onReadyMediaListener;
+    private final Property<Runnable> onStoppedMediaListener;
     private final Property<Runnable> onEndMediaListener;
 }
