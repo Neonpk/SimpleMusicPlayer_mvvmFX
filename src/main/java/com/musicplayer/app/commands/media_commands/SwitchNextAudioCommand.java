@@ -12,8 +12,6 @@ import com.musicplayer.app.models.Track.Track;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class SwitchNextAudioCommand extends DelegateCommand {
@@ -53,12 +51,12 @@ public class SwitchNextAudioCommand extends DelegateCommand {
 
         // Check for missing files
 
-        if(trackListQueue.stream().noneMatch(track -> Files.exists(Paths.get(track.getFileName())))) {
+        if(trackListQueue.stream().allMatch(Track::isMissing)) {
             System.out.println("Playback is not possible because all tracks are missing");
             return;
         }
 
-        while(!Files.exists(Paths.get(trackListQueue.get(index).getFileName()))) {
+        while(trackListQueue.get(index).isMissing()) {
             System.out.printf("Missing track (%s) was skipped \n", trackListQueue.get(index).getFileName());
             index = (index + 1) % count;
         }

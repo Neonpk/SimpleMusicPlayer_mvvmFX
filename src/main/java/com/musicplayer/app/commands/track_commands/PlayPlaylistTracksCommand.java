@@ -14,8 +14,6 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class PlayPlaylistTracksCommand extends DelegateCommand {
@@ -64,7 +62,7 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
             return;
         }
 
-        if(trackListQueue.stream().noneMatch(track -> Files.exists(Paths.get(track.getFileName())))) {
+        if(trackListQueue.stream().allMatch(Track::isMissing)) {
             System.out.println("Playback is not possible because all tracks are missing");
             return;
         }
@@ -72,7 +70,7 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
         int index = 0;
         int count = trackListQueue.size();
 
-        while(!Files.exists(Paths.get(trackListQueue.get(index).getFileName()))) {
+        while(trackListQueue.get(index).isMissing()) {
             System.out.printf("Missing track (%s) was skipped \n", trackListQueue.get(index).getFileName());
             index = (index + 1) % count;
         }

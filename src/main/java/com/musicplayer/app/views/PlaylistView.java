@@ -33,6 +33,9 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
     @FXML
     private Button listenPlaylistButton;
 
+    @FXML
+    private Button removeMissingTracksButton;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -45,6 +48,7 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
         // Events
 
         addTracksButton.setOnAction((_) -> viewModel.getAddTracksCommand().execute());
+        removeMissingTracksButton.setOnAction((_) -> viewModel.getDeleteMissingTracksCommand().execute());
         listenPlaylistButton.setOnAction((_) -> viewModel.getPlayPlaylistTracksCommand().execute() );
         searchTextField.textProperty().addListener((_) -> viewModel.getSearchTracksCommand().execute() );
         listViewTracks.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> viewModel.getSelectedTrackProperty().setValue(newVal));

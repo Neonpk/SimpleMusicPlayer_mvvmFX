@@ -19,7 +19,10 @@
         <BorderPane BorderPane.alignment="CENTER">
 
             <left>
-                <Button text="Прослушивать" fx:id="listenPlaylistButton" />
+                <FlowPane hgap="10">
+                    <Button text=">" fx:id="listenPlaylistButton" />
+                    <Button text="Удалить битые пути" fx:id="removeMissingTracksButton" />
+                </FlowPane>
             </left>
 
             <center>
@@ -31,7 +34,7 @@
             </center>
 
             <right>
-                <Button text="Добавить треки" fx:id="addTracksButton"/>
+                <Button text="+" fx:id="addTracksButton"/>
             </right>
 
             <bottom>

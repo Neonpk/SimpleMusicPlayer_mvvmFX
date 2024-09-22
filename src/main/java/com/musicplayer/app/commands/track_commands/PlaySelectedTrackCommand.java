@@ -14,8 +14,6 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class PlaySelectedTrackCommand extends DelegateCommand {
@@ -60,7 +58,7 @@ public class PlaySelectedTrackCommand extends DelegateCommand {
 
         Track selectedTrack;
 
-        if((selectedTrack = selectedTrackProperty.getValue()) == null || !Files.exists(Paths.get(selectedTrack.getFileName()))) {
+        if((selectedTrack = selectedTrackProperty.getValue()) == null || selectedTrack.isMissing()) {
             System.out.println("Selected track not found.");
             disposeOldMedia();
             return;

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 
@@ -19,4 +21,9 @@ public class Track {
 
     @JsonIgnore
     private final HashMap<String, Object> metaData = new HashMap<>();
+
+    @JsonIgnore
+    public boolean isMissing() {
+        return !Files.exists(Paths.get(fileName));
+    }
 }

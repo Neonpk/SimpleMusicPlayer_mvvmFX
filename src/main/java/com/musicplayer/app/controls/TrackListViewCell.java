@@ -15,8 +15,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -89,7 +87,7 @@ public class TrackListViewCell extends ListCell<Track> {
             String addedDateText = new SimpleDateFormat("dd.MM.yyyy\nHH:mm:ss").
                     format(new Date(item.getAdded()));
 
-            if(!Files.exists(Paths.get(item.getFileName()))) {
+            if(item.isMissing()) {
 
                 labelAddedTime.setText(addedDateText);
                 labelFileName.setText(shortFileName);

@@ -38,6 +38,7 @@ public class PlaylistViewModel implements ViewModel {
     private final FilteredList<Track> filteredTrackList = new FilteredList<>(tracks, (_) -> true);
 
     private final Command deleteTrackCommand;
+    private final Command deleteMissingTracksCommand;
     private final Command playSelectedTrackCommand;
     private final Command addTracksCommand;
     private final Command searchTracksCommand;
@@ -69,6 +70,7 @@ public class PlaylistViewModel implements ViewModel {
         // Commands
 
         deleteTrackCommand = new DeleteTrackCommand(new DeleteTrackCmdParam(playlistId, tracks, selectedTrackProperty));
+        deleteMissingTracksCommand = new DeleteMissingTracksCommand(tracks);
         addTracksCommand = new AddNewTracksCommand(tracks);
         searchTracksCommand = new SearchTracksCommand(filteredTrackList, searchTextProperty);
 
