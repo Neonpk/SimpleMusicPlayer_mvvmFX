@@ -90,6 +90,8 @@ public class MediaListeners {
     private final Runnable onStoppedMediaListener = new Runnable() {
         @Override
         public void run() {
+            metaDataHash.clear();
+
             artistTextProperty.setValue("Неизвестный артист");
             titleTextProperty.setValue("Неизвестный заголовок");
             imageCoverProperty.setValue( defaultCover );
@@ -106,6 +108,7 @@ public class MediaListeners {
     private final Runnable onEndMediaListener = new Runnable() {
         @Override
         public void run() {
+
             boolean isRepeat = repeatStatusProperty.getValue();
             if(!isRepeat) switchNextAudioCommand.execute();
         }

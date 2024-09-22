@@ -17,7 +17,7 @@
 
                    <VBox alignment="CENTER_LEFT">
                        <Label text="Артист" fx:id="labelArtist" style="-fx-text-fill: black;"/>
-                       <Label text="Трек" fx:id="labelTitle" style="-fx-text-fill: black;" />
+                       <Label text="Заголовок" fx:id="labelTitle" style="-fx-text-fill: black;" />
                        <Label text="Путь" fx:id="labelFileName" style="-fx-text-fill: black;" />
                    </VBox>
 
@@ -30,7 +30,7 @@
                     <padding>
                         <Insets right="15"/>
                     </padding>
-
+                    <Label fx:id="labelTrackNotFound" style="-fx-text-fill: red;"  />
                     <Label text="Время добавления" fx:id="labelAddedTime" style="-fx-text-fill: black;"/>
                 </FlowPane>
             </right>

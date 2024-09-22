@@ -1,5 +1,6 @@
 package com.musicplayer.app.controls;
 
+import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.models.Track.Track;
 import com.musicplayer.app.models.Track.TrackMetadataListener;
 import com.musicplayer.app.models.Track.TrackMetadataListenerParam;
@@ -8,11 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -31,6 +35,9 @@ public class TrackListViewCell extends ListCell<Track> {
 
     @FXML
     private Label labelAddedTime;
+
+    @FXML
+    private Label labelTrackNotFound;
 
     @FXML
     private ImageView imageViewCover;
@@ -77,14 +84,26 @@ public class TrackListViewCell extends ListCell<Track> {
                 System.gc();
             }
 
-            media = new Media(new File(item.getFileName()).toURI().toString());
-            media.getMetadata().addListener(trackMetadataListener.getMetaDataChangeListenger());
-
+            Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
+            String shortFileName = item.getFileName().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1");
             String addedDateText = new SimpleDateFormat("dd.MM.yyyy\nHH:mm:ss").
                     format(new Date(item.getAdded()));
 
+            if(!Files.exists(Paths.get(item.getFileName()))) {
+
+                labelAddedTime.setText(addedDateText);
+                labelFileName.setText(shortFileName);
+                imageViewCover.setImage(defaultCover);
+                labelTrackNotFound.setText("Трек не найден");
+
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                return;
+            }
+
+            media = new Media(new File(item.getFileName()).toURI().toString());
+            media.getMetadata().addListener(trackMetadataListener.getMetaDataChangeListenger());
             labelAddedTime.setText(addedDateText);
-            labelFileName.setText(item.getFileName().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1"));
+            labelFileName.setText(shortFileName);
 
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 

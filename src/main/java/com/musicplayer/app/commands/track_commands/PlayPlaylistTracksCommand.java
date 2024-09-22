@@ -14,6 +14,8 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class PlayPlaylistTracksCommand extends DelegateCommand {
@@ -61,6 +63,12 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
             return;
         }
 
+        if ( !Files.exists(Paths.get(playlistTracks.getFirst().getFileName())) ) {
+            System.out.println("Track not found");
+            disposeOldMedia();
+            return;
+        }
+
         Track firstTrack = playlistTracks.getFirst();
         String fileNameURI = new File( firstTrack.getFileName() ).toURI().toString();
 
@@ -75,6 +83,8 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
 
         mediaProperty.setValue(newMedia);
         mediaPlayerProperty.setValue(newMediaPlayer);
+
+        mediaPlayerProperty.getValue().play();
     }
 
     private static void playPlaylistTracks(PlayTrackCmdParam playTrackCmdParam) {
@@ -101,9 +111,6 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
 
         disposeOldMedia();
         setNewMedia();
-
-        mediaPlayerProperty.getValue().play();
-
     }
 
     public PlayPlaylistTracksCommand(PlayTrackCmdParam playTrackCmdParam) {

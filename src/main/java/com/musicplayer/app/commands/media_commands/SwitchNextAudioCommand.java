@@ -12,11 +12,14 @@ import com.musicplayer.app.models.Track.Track;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class SwitchNextAudioCommand extends DelegateCommand {
 
     private static int index = 0;
+    private static int count = 0;
     private static List<Track> trackListQueue;
 
     private static Property<Media> mediaProperty;
@@ -28,17 +31,39 @@ public class SwitchNextAudioCommand extends DelegateCommand {
 
     private static void disposeOldMedia() {
 
-        Media oldMedia = mediaProperty.getValue();
-        MediaPlayer oldMediaPlayer = mediaPlayerProperty.getValue();
-        oldMedia.getMetadata().removeListener(metaDataListenger);
-        oldMediaPlayer.currentTimeProperty().removeListener(durationChangeListener);
-        oldMediaPlayer.setOnReady(null);
-        oldMediaPlayer.setOnEndOfMedia(null);
-        oldMediaPlayer.stop();
-        oldMediaPlayer.dispose();
+        Media oldMedia;
+        MediaPlayer oldMediaPlayer;
+
+        if((oldMedia = mediaProperty.getValue()) != null && (oldMediaPlayer = mediaPlayerProperty.getValue()) != null)
+        {
+            if(oldMediaPlayer.getStatus() == MediaPlayer.Status.STOPPED) {
+                return;
+            }
+
+            oldMedia.getMetadata().removeListener(metaDataListenger);
+            oldMediaPlayer.currentTimeProperty().removeListener(durationChangeListener);
+            oldMediaPlayer.setOnReady(null);
+            oldMediaPlayer.setOnEndOfMedia(null);
+            oldMediaPlayer.stop();
+            oldMediaPlayer.dispose();
+        }
     }
 
     private static void setNewMedia() {
+
+        // Check for missing files
+
+        if(trackListQueue.stream().noneMatch(track -> Files.exists(Paths.get(track.getFileName())))) {
+            System.out.println("Playback is not possible because all tracks are missing");
+            return;
+        }
+
+        while(!Files.exists(Paths.get(trackListQueue.get(index).getFileName()))) {
+            System.out.printf("Missing track (%s) was skipped \n", trackListQueue.get(index).getFileName());
+            index = (index + 1) % count;
+        }
+
+        // Get Instance
 
         String fileUri = new File(trackListQueue.get( index ).getFileName()).toURI().toString();
         Media newMedia = new Media( fileUri );
@@ -49,6 +74,8 @@ public class SwitchNextAudioCommand extends DelegateCommand {
         newMediaPlayer.setOnEndOfMedia(onEndMediaListener);
         mediaProperty.setValue(newMedia);
         mediaPlayerProperty.setValue(newMediaPlayer);
+
+        mediaPlayerProperty.getValue().play();
     }
 
     private static void next(SwitchAudioCmdParam switchAudioCmdParam) {
@@ -64,15 +91,13 @@ public class SwitchNextAudioCommand extends DelegateCommand {
 
         Property<Number> selectedAudioIndex = switchAudioCmdParam.getSelectedAudioIndex();
 
-        int count = trackListQueue.size();
+        count = trackListQueue.size();
         index = selectedAudioIndex.getValue().intValue();
 
         index = (index + 1) % count;
 
         disposeOldMedia();
         setNewMedia();
-
-        mediaPlayerProperty.getValue().play();
 
         selectedAudioIndex.setValue(index);
     }
