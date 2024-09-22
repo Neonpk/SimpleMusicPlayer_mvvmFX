@@ -21,6 +21,7 @@ import java.util.List;
 public class PlayPlaylistTracksCommand extends DelegateCommand {
 
     private static List<Track> playlistTracks;
+    private static List<Track> trackListQueue;
 
     private static Property<Number> selectedAudioIndexProperty;
 
@@ -63,13 +64,20 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
             return;
         }
 
-        if ( !Files.exists(Paths.get(playlistTracks.getFirst().getFileName())) ) {
-            System.out.println("Track not found");
-            disposeOldMedia();
+        if(trackListQueue.stream().noneMatch(track -> Files.exists(Paths.get(track.getFileName())))) {
+            System.out.println("Playback is not possible because all tracks are missing");
             return;
         }
 
-        Track firstTrack = playlistTracks.getFirst();
+        int index = 0;
+        int count = trackListQueue.size();
+
+        while(!Files.exists(Paths.get(trackListQueue.get(index).getFileName()))) {
+            System.out.printf("Missing track (%s) was skipped \n", trackListQueue.get(index).getFileName());
+            index = (index + 1) % count;
+        }
+
+        Track firstTrack = playlistTracks.get(index);
         String fileNameURI = new File( firstTrack.getFileName() ).toURI().toString();
 
         Media newMedia = new Media(fileNameURI);
@@ -79,7 +87,7 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
         newMediaPlayer.setOnReady(onReadyMediaListener);
         newMediaPlayer.setOnEndOfMedia(onEndMediaListener);
 
-        selectedAudioIndexProperty.setValue(0);
+        selectedAudioIndexProperty.setValue(index);
 
         mediaProperty.setValue(newMedia);
         mediaPlayerProperty.setValue(newMediaPlayer);
@@ -104,7 +112,7 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
         onEndMediaListener = playTrackCmdParam.getOnEndMediaListener().getValue();
 
         // TrackList Queue
-        List<Track> trackListQueue = playTrackCmdParam.getTrackListQueue();
+        trackListQueue = playTrackCmdParam.getTrackListQueue();
 
         trackListQueue.clear();
         trackListQueue.addAll(playlistTracks);
