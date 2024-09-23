@@ -5,12 +5,9 @@ import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.services.NavigationService;
 import com.musicplayer.app.services.MediaProvider;
 import com.musicplayer.app.viewmodels.PlaylistViewModel;
-import com.musicplayer.app.views.PlaylistView;
-import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 
@@ -39,11 +36,9 @@ public class SavePlaylistCommand extends DelegateCommand {
         Playlist playlist = new Playlist( id, playListName.getValue(), new ArrayList<>( ));
 
         playlists.add( playlist );
+        playListName.setValue("");
 
-        var fxmlView = FluentViewLoader.fxmlView(PlaylistView.class);
-        var viewTuple = fxmlView.viewModel( new PlaylistViewModel(vmProvider, new SimpleObjectProperty<>(playlist)) );
-
-        navService.navigate(viewTuple.load().getView());
+        navService.navigate(PlaylistViewModel.class);
     }
 
     private static void saveSelectedPlaylist(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
@@ -55,7 +50,7 @@ public class SavePlaylistCommand extends DelegateCommand {
         // Params
         StringProperty playListName = savePlaylistCmdParam.getPlayListName();
         StringProperty statusMessage = savePlaylistCmdParam.getStatusMessage();
-        Property<Playlist> selectedPlaylist = savePlaylistCmdParam.getSelectedPlaylist();
+        Property<Playlist> selectedPlaylist = savePlaylistCmdParam.getSelectedPlaylistProperty();
 
         if ( playListName.getValueSafe().trim().isEmpty() ) {
             statusMessage.setValue("Название не было указано.");
@@ -67,18 +62,17 @@ public class SavePlaylistCommand extends DelegateCommand {
         playlist.setName(playListName.getValue());
 
         mediaProvider.getPlaylists().set( id, playlist );
+        playListName.setValue("");
 
-        var fxmlView = FluentViewLoader.fxmlView(PlaylistView.class);
-        var viewTuple = fxmlView.viewModel( new PlaylistViewModel(vmProvider, selectedPlaylist) );
-
-        navService.navigate(viewTuple.load().getView());
+        navService.navigate(PlaylistViewModel.class);
     }
 
     public SavePlaylistCommand(VmProvider vmProvider, SavePlaylistCmdParam savePlaylistCmdParam) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                if (savePlaylistCmdParam.isEditMode()) {
+                boolean isEditMode = savePlaylistCmdParam.getIsEditModeProperty().getValue();
+                if (isEditMode) {
                     saveSelectedPlaylist(vmProvider, savePlaylistCmdParam);
                 } else {
                     saveNewPlaylist(vmProvider, savePlaylistCmdParam);

@@ -4,14 +4,18 @@ import com.musicplayer.app.AppStarter;
 import com.musicplayer.app.commands.media_commands.SwitchNextAudioCommand;
 import com.musicplayer.app.commands.media_commands.SwitchPrevAudioCommand;
 import com.musicplayer.app.models.CommandParams.SwitchAudioCmdParam;
+import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.Track.Track;
+import com.musicplayer.app.models.Track.TrackCollectionListener;
 import com.musicplayer.app.models.Track.TrackMetadataListener;
 import com.musicplayer.app.models.Track.TrackMetadataListenerParam;
+import com.musicplayer.app.services.PlaylistJsonProvider;
 import com.musicplayer.app.viewmodels.MainViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
@@ -48,6 +52,9 @@ public class MediaListeners {
 
     @Getter
     private final MapChangeListener<String, Object> metaDataChangeListener;
+
+    @Getter
+    private final ListChangeListener<Track> trackCollectionListener;
 
     @Getter
     private final HashMap<String, Object> metaDataHash = new HashMap<>();
@@ -114,7 +121,7 @@ public class MediaListeners {
         }
     };
 
-    public MediaListeners(MainViewModel mainViewModel) {
+    public MediaListeners(MainViewModel mainViewModel, PlaylistJsonProvider playlistJsonProvider) {
 
         this.mediaPlayerProperty = mainViewModel.getMediaPlayerProperty();
         this.sliderProgressUpdateProperty = mainViewModel.getSliderProgressUpdateProperty();
@@ -130,6 +137,7 @@ public class MediaListeners {
         this.titleTextProperty = mainViewModel.getTitleTextProperty();
         this.imageCoverProperty = mainViewModel.getImageCoverProperty();
 
+        Property<Playlist> selectedPlaylistProperty = mainViewModel.getSelectedPlaylistProperty();
         Property<Number> selectedAudioIndexProperty = mainViewModel.getSelectedAudioIndexProperty();
         List<Track> trackListQueue = mainViewModel.getTrackListQueue();
         Property<Media> mediaProperty = mainViewModel.getMediaProperty();
@@ -138,6 +146,11 @@ public class MediaListeners {
                 new TrackMetadataListenerParam(titleTextProperty, artistTextProperty, imageCoverProperty, metaDataHash)
         ).getMetaDataChangeListenger();
 
+        trackCollectionListener = new TrackCollectionListener(
+                playlistJsonProvider, selectedPlaylistProperty, trackListQueue
+        ).getTrackCollectionListener();
+
+        mainViewModel.getTrackCollectionListener().setValue( trackCollectionListener );
         mainViewModel.getMetaDataChangeListener().setValue( metaDataChangeListener );
         mainViewModel.getDurationChangeListener().setValue( durationChangeListener );
         mainViewModel.getOnReadyMediaListener().setValue( onReadyMediaListener );

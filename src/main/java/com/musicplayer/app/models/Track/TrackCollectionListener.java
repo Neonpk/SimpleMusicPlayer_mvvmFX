@@ -17,9 +17,10 @@ public class TrackCollectionListener {
 
     public TrackCollectionListener(PlaylistJsonProvider playlistJsonProvider, Property<Playlist> selectedPlaylistProperty, List<Track> trackListQueue) {
 
-        int playlistId = selectedPlaylistProperty.getValue().getId();
-
         trackCollectionListener = ch -> {
+
+            int playlistId = selectedPlaylistProperty.getValue().getId();
+
             while (ch.next()) {
 
                 ch.getRemoved().forEach(removedTrack -> {

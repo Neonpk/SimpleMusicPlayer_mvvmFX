@@ -3,6 +3,7 @@ package com.musicplayer.app.commands.track_commands;
 import com.musicplayer.app.models.Track.Track;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
+import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.collections.transformation.FilteredList;
 
@@ -11,8 +12,9 @@ import java.util.Date;
 
 public class SearchTracksCommand extends DelegateCommand {
 
-    private static void searchTracks(FilteredList<Track> filteredTrackList, StringProperty searchTextProperty) {
+    private static void searchTracks(Property<FilteredList<Track>> filteredTrackListProperty, StringProperty searchTextProperty) {
 
+        FilteredList<Track> filteredTrackList = filteredTrackListProperty.getValue();
         String searchText = searchTextProperty.getValueSafe().toLowerCase();
 
         if(searchText.trim().isEmpty()) {
@@ -35,11 +37,11 @@ public class SearchTracksCommand extends DelegateCommand {
 
     }
 
-    public SearchTracksCommand(FilteredList<Track> filteredTrackList, StringProperty searchTextProperty) {
+    public SearchTracksCommand(Property<FilteredList<Track>> filteredTrackListProperty, StringProperty searchTextProperty) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                searchTracks(filteredTrackList, searchTextProperty);
+                searchTracks(filteredTrackListProperty, searchTextProperty);
             }
         });
     }

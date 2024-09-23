@@ -2,16 +2,21 @@ package com.musicplayer.app;
 
 import com.musicplayer.app.models.CacheLoader;
 import com.musicplayer.app.models.Playlist.PlaylistsJsonDeserializer;
-import com.musicplayer.app.services.NavigationService;
-import com.musicplayer.app.services.PlaylistJsonProvider;
-import com.musicplayer.app.services.MediaProvider;
-import com.musicplayer.app.services.VmProvider;
+import com.musicplayer.app.services.*;
+import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
 import com.musicplayer.app.viewmodels.MainViewModel;
+import com.musicplayer.app.viewmodels.PlaylistViewModel;
+import com.musicplayer.app.views.CreateEditPlaylistView;
 import com.musicplayer.app.views.MainView;
+import com.musicplayer.app.views.PlaylistView;
 import de.saxsys.mvvmfx.FluentViewLoader;
+import de.saxsys.mvvmfx.FxmlView;
+import de.saxsys.mvvmfx.ViewModel;
+import de.saxsys.mvvmfx.ViewTuple;
 import de.saxsys.mvvmfx.easydi.MvvmfxEasyDIApplication;
 import eu.lestard.easydi.EasyDI;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,15 +25,37 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.function.Function;
 
 public class AppStarter extends MvvmfxEasyDIApplication {
 
+    // Custom Configurations
+
+    private static class ViewContext extends HashMap<Class<? extends ViewModel>, ViewTuple<? extends FxmlView<? extends ViewModel>, ? extends ViewModel> > {}
+    private final ViewContext viewContext = new ViewContext();
+
+    // Instances
+
     private MainViewModel mainViewModel;
+
 
     @Override
     public void initEasyDi(EasyDI context) throws IOException {
 
-        context.bindInstance(NavigationService.class, new NavigationService(new SimpleObjectProperty<>()));
+        Function<Class<? extends ViewModel>, ViewTuple<? extends FxmlView<? extends ViewModel>, ? extends ViewModel>> viewModelFactoryFunc
+                = viewContext::get;
+
+        context.bindInstance(NavigationService.class, new NavigationService(viewModelFactoryFunc));
+
+        context.bindInstance(PlaylistSelectionProvider.class, new PlaylistSelectionProvider(
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(false),
+                new SimpleStringProperty(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>(),
+                new SimpleObjectProperty<>()
+        ));
 
         context.bindInstance(MediaProvider.class, new MediaProvider(
                 FXCollections.observableArrayList(),
@@ -48,12 +75,25 @@ public class AppStarter extends MvvmfxEasyDIApplication {
         ) );
 
         context.bindInstance(VmProvider.class, new VmProvider(
+                context.getInstance(PlaylistSelectionProvider.class),
                 context.getInstance(PlaylistJsonProvider.class),
                 context.getInstance(MediaProvider.class),
                 context.getInstance(NavigationService.class)
         ));
 
+        // ViewModels
         context.bindInstance(MainViewModel.class, new MainViewModel(context.getInstance(VmProvider.class)));
+        context.bindInstance(CreateEditPlaylistViewModel.class, new CreateEditPlaylistViewModel(context.getInstance(VmProvider.class)));
+        context.bindInstance(PlaylistViewModel.class, new PlaylistViewModel(context.getInstance(VmProvider.class)));
+
+        // HashMap view Instances
+        viewContext.put(CreateEditPlaylistViewModel.class, FluentViewLoader.fxmlView(CreateEditPlaylistView.class).viewModel(
+           context.getInstance(CreateEditPlaylistViewModel.class)
+        ).load());
+
+        viewContext.put(PlaylistViewModel.class, FluentViewLoader.fxmlView(PlaylistView.class).viewModel(
+           context.getInstance(PlaylistViewModel.class)
+        ).load());
 
         // Instances
         mainViewModel = context.getInstance(MainViewModel.class);

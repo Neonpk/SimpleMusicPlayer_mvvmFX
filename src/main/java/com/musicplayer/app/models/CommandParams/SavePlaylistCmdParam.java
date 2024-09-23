@@ -6,17 +6,12 @@ import javafx.beans.property.StringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 @AllArgsConstructor
 @SuppressWarnings("all")
 public class SavePlaylistCmdParam {
     private final StringProperty playListName;
     private final StringProperty statusMessage;
-    private final Property<Playlist> selectedPlaylist;
-
-    public boolean isEditMode() {
-        return !Objects.equals(selectedPlaylist, null);
-    }
+    private final Property<Playlist> selectedPlaylistProperty;
+    private final Property<Boolean> isEditModeProperty;
 }

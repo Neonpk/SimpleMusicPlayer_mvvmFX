@@ -9,14 +9,12 @@ import com.musicplayer.app.commands.media_commands.*;
 import com.musicplayer.app.models.MediaListeners;
 import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.Playlist.PlaylistCollectionListener;
-import com.musicplayer.app.services.VmProvider;
-import com.musicplayer.app.services.NavigationService;
-import com.musicplayer.app.services.PlaylistJsonProvider;
-import com.musicplayer.app.services.MediaProvider;
+import com.musicplayer.app.services.*;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -35,6 +33,7 @@ import java.util.*;
 public class MainViewModel implements ViewModel {
 
     // Properties (fields)
+
     private final Property<Number> selectedAudioIndexProperty = new SimpleObjectProperty<>(0);
 
     private final Property<Number> selectedVolumeProperty = new SimpleObjectProperty<>(50.0f);
@@ -71,12 +70,15 @@ public class MainViewModel implements ViewModel {
 
     private final Property<ContextMenu> contextMenuProperty = new SimpleObjectProperty<>();
 
+    private final Property<Boolean> playlistIsSelectedProperty = new SimpleObjectProperty<>(false);
+
     private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
 
     private final Property<Node> selectedView = new SimpleObjectProperty<>();
 
     // Properties -> Listeners
 
+    private final Property<ListChangeListener<Track>> trackCollectionListener = new SimpleObjectProperty<>();
     private final Property<MapChangeListener<String, Object>> metaDataChangeListener = new SimpleObjectProperty<>();
     private final Property<ChangeListener<Duration>> durationChangeListener = new SimpleObjectProperty<>();
     private final Property<Runnable> onReadyMediaListener = new SimpleObjectProperty<>();
@@ -86,7 +88,6 @@ public class MainViewModel implements ViewModel {
     // Fields
 
     private final ObservableList<Playlist> playlists;
-
     private final List<Track> trackListQueue;
 
     // Commands
@@ -113,7 +114,9 @@ public class MainViewModel implements ViewModel {
         PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
         MediaProvider mediaProvider = vmProvider.getMediaProvider();
         NavigationService navigationService = vmProvider.getNavigationService();
+        PlaylistSelectionProvider playlistSelectionProvider = vmProvider.getPlaylistSelectionProvider();
 
+        this.trackCollectionListener.bindBidirectional( vmProvider.getPlaylistSelectionProvider().getTrackCollectionListener() );
         this.metaDataChangeListener.bindBidirectional( vmProvider.getMediaProvider().getMetaDataChangeListener() );
         this.durationChangeListener.bindBidirectional( vmProvider.getMediaProvider().getDurationChangeListener() );
         this.onReadyMediaListener.bindBidirectional( vmProvider.getMediaProvider().getOnReadyMediaListener() );
@@ -123,20 +126,22 @@ public class MainViewModel implements ViewModel {
         this.mediaProperty.bindBidirectional(mediaProvider.getMediaProperty());
         this.mediaPlayerProperty.bindBidirectional(mediaProvider.getMediaPlayerProperty());
         this.selectedAudioIndexProperty.bindBidirectional(mediaProvider.getSelectedAudioIndexProperty());
+        this.selectedPlaylistProperty.bindBidirectional( playlistSelectionProvider.getSelectedPlaylistProperty() );
+        this.playlistIsSelectedProperty.bindBidirectional( playlistSelectionProvider.getPlaylistIsSelectedProperty() );
 
         navigationService.bindBidirectional(selectedView);
 
         playlists = mediaProvider.getPlaylists();
         trackListQueue = mediaProvider.getTrackListQueue();
 
-        MediaListeners mediaListeners = new MediaListeners(this);
+        MediaListeners mediaListeners = new MediaListeners(this, playlistJsonProvider);
 
         switchNextAudioCommand = mediaListeners.getSwitchNextAudioCommand();
         switchPrevAudioCommand = mediaListeners.getSwitchPrevAudioCommand();
 
-        selectedPlaylistCommand = new SelectedPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
-        playlistCreateCommand = new CreatePlaylistCommand(vmProvider, selectedView);
-        playlistEditCommand = new EditPlaylistCommand(vmProvider, selectedPlaylistProperty, selectedView);
+        selectedPlaylistCommand = new SelectedPlaylistCommand(vmProvider);
+        playlistCreateCommand = new CreatePlaylistCommand(vmProvider);
+        playlistEditCommand = new EditPlaylistCommand(vmProvider);
         deletePlaylistCommand = new DeletePlaylistCommand(vmProvider, selectedPlaylistProperty);
 
         playlists.addAll(playlistJsonProvider.Deserialize());

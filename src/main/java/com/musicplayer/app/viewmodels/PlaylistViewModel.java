@@ -1,19 +1,16 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.commands.track_commands.*;
-import com.musicplayer.app.models.CommandParams.DeleteTrackCmdParam;
 import com.musicplayer.app.models.CommandParams.PlayTrackCmdParam;
 import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.Track.Track;
-import com.musicplayer.app.models.Track.TrackCollectionListener;
 import com.musicplayer.app.services.MediaProvider;
-import com.musicplayer.app.services.PlaylistJsonProvider;
+import com.musicplayer.app.services.PlaylistSelectionProvider;
 import com.musicplayer.app.services.VmProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -29,13 +26,12 @@ import java.util.List;
 public class PlaylistViewModel implements ViewModel {
 
     private final StringProperty playlistNameProperty = new SimpleStringProperty();
-    private final Property<Playlist> selectedPlaylistProperty = new SimpleObjectProperty<>();
     private final Property<Track> selectedTrackProperty = new SimpleObjectProperty<>();
     private final StringProperty searchTextProperty = new SimpleStringProperty();
     private final Property<ContextMenu> contextMenuProperty = new SimpleObjectProperty<>();
 
-    private final ObservableList<Track> tracks = FXCollections.observableArrayList();
-    private final FilteredList<Track> filteredTrackList = new FilteredList<>(tracks, (_) -> true);
+    private final Property<ObservableList<Track>> tracksProperty = new SimpleObjectProperty<>();
+    private final Property<FilteredList<Track>> filteredListTracksProperty = new SimpleObjectProperty<>();
 
     private final Command deleteTrackCommand;
     private final Command deleteMissingTracksCommand;
@@ -44,14 +40,15 @@ public class PlaylistViewModel implements ViewModel {
     private final Command searchTracksCommand;
     private final Command playPlaylistTracksCommand;
 
-    public PlaylistViewModel(VmProvider vmProvider, Property<Playlist> selectedPlaylistProperty) {
+    public PlaylistViewModel(VmProvider vmProvider) {
 
         // Providers
-        PlaylistJsonProvider playlistJsonProvider = vmProvider.getPlaylistJsonProvider();
+        PlaylistSelectionProvider playlistSelectionProvider = vmProvider.getPlaylistSelectionProvider();
         MediaProvider mediaProvider = vmProvider.getMediaProvider();
 
         // Properties
 
+        Property<Playlist> selectedPlaylistProperty = playlistSelectionProvider.getSelectedPlaylistProperty();
         Property<Media> mediaProperty = mediaProvider.getMediaProperty();
         Property<MediaPlayer> mediaPlayerProperty = mediaProvider.getMediaPlayerProperty();
         Property<Number> selectedAudioIndexProperty = mediaProvider.getSelectedAudioIndexProperty();
@@ -65,14 +62,12 @@ public class PlaylistViewModel implements ViewModel {
         Property<Runnable> onStoppedMediaListener = mediaProvider.getOnStoppedMediaListener();
         Property<Runnable> onEndMediaListenerProperty = mediaProvider.getOnEndMediaListener();
 
-        int playlistId = selectedPlaylistProperty.getValue().getId();
-
         // Commands
 
-        deleteTrackCommand = new DeleteTrackCommand(new DeleteTrackCmdParam(playlistId, tracks, selectedTrackProperty));
-        deleteMissingTracksCommand = new DeleteMissingTracksCommand(tracks);
-        addTracksCommand = new AddNewTracksCommand(tracks);
-        searchTracksCommand = new SearchTracksCommand(filteredTrackList, searchTextProperty);
+        deleteTrackCommand = new DeleteTrackCommand(tracksProperty, selectedTrackProperty);
+        deleteMissingTracksCommand = new DeleteMissingTracksCommand(tracksProperty);
+        addTracksCommand = new AddNewTracksCommand(tracksProperty);
+        searchTracksCommand = new SearchTracksCommand(filteredListTracksProperty, searchTextProperty);
 
         playPlaylistTracksCommand = new PlayPlaylistTracksCommand(
                 new PlayTrackCmdParam(
@@ -92,13 +87,9 @@ public class PlaylistViewModel implements ViewModel {
                 )
         );
 
-        playlistNameProperty.setValue(selectedPlaylistProperty.getValue().getName());
-
-        this.selectedPlaylistProperty.bindBidirectional(selectedPlaylistProperty);
-        tracks.addAll(selectedPlaylistProperty.getValue().getTracks());
-        tracks.addListener(
-                new TrackCollectionListener(playlistJsonProvider, selectedPlaylistProperty, trackListQueue).getTrackCollectionListener()
-        );
+        playlistNameProperty.bindBidirectional( playlistSelectionProvider.getSelectedPlaylistNameProperty() );
+        tracksProperty.bindBidirectional(playlistSelectionProvider.getObservablePlaylistTracksProperty());
+        filteredListTracksProperty.bindBidirectional(playlistSelectionProvider.getFilteredPlaylistTracksProperty());
     }
 
 }

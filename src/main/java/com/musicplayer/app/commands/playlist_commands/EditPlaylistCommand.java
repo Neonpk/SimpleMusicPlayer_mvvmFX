@@ -1,28 +1,37 @@
 package com.musicplayer.app.commands.playlist_commands;
 
-import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.services.NavigationService;
+import com.musicplayer.app.services.PlaylistSelectionProvider;
 import com.musicplayer.app.services.VmProvider;
 import com.musicplayer.app.viewmodels.CreateEditPlaylistViewModel;
-import com.musicplayer.app.views.CreateEditPlaylistView;
-import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.utils.commands.Action;
 import de.saxsys.mvvmfx.utils.commands.DelegateCommand;
 import javafx.beans.property.Property;
-import javafx.scene.Node;
 
 public class EditPlaylistCommand extends DelegateCommand {
 
-    private static void editPlaylist(VmProvider vmProvider, Property<Playlist> selectedPlaylist, Property<Node> selectedView) {
-        CreateEditPlaylistViewModel viewModelInstance = new CreateEditPlaylistViewModel( vmProvider, selectedPlaylist );
-        var viewTuple = FluentViewLoader.fxmlView(CreateEditPlaylistView.class).viewModel(viewModelInstance);
-        selectedView.setValue( viewTuple.load().getView() );
+    private static void editPlaylist(VmProvider vmProvider) {
+
+        // Providers
+
+        NavigationService navigationService = vmProvider.getNavigationService();
+        PlaylistSelectionProvider playlistSelectionProvider = vmProvider.getPlaylistSelectionProvider();
+
+        // Operations
+
+        Property<Boolean> editMode = playlistSelectionProvider.getPlaylistIsSelectedProperty();
+        editMode.setValue(true);
+
+        // Navigation
+
+        navigationService.navigate(CreateEditPlaylistViewModel.class);
     }
 
-    public EditPlaylistCommand(VmProvider vmProvider, Property<Playlist> selectedPlaylist, Property<Node> selectedView) {
+    public EditPlaylistCommand(VmProvider vmProvider) {
         super(() -> new Action() {
             @Override
             protected void action() {
-                editPlaylist(vmProvider, selectedPlaylist, selectedView);
+                editPlaylist(vmProvider);
             }
         });
     }

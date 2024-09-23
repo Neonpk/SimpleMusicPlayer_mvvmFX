@@ -39,7 +39,7 @@ public class PlaylistView implements FxmlView<PlaylistViewModel>, Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        listViewTracks.setItems(viewModel.getFilteredTrackList());
+        listViewTracks.itemsProperty().bind(viewModel.getFilteredListTracksProperty());
         listViewTracks.contextMenuProperty().bindBidirectional(viewModel.getContextMenuProperty() );
         listViewTracks.setCellFactory( new TrackListViewCellFactory() );
         playlistNameLabel.textProperty().bindBidirectional( viewModel.getPlaylistNameProperty() );

@@ -1,8 +1,9 @@
 package com.musicplayer.app.viewmodels;
 
 import com.musicplayer.app.commands.playlist_commands.SavePlaylistCommand;
-import com.musicplayer.app.models.Playlist.Playlist;
 import com.musicplayer.app.models.CommandParams.SavePlaylistCmdParam;
+import com.musicplayer.app.models.Playlist.Playlist;
+import com.musicplayer.app.services.PlaylistSelectionProvider;
 import com.musicplayer.app.services.VmProvider;
 import de.saxsys.mvvmfx.ViewModel;
 import de.saxsys.mvvmfx.utils.commands.Command;
@@ -21,16 +22,15 @@ public class CreateEditPlaylistViewModel implements ViewModel {
 
     public CreateEditPlaylistViewModel(VmProvider vmProvider) {
 
-        SavePlaylistCmdParam savePlaylistCmdParam = new SavePlaylistCmdParam(playlistNameProperty, statusTextProperty, null);
+        PlaylistSelectionProvider playlistSelectionProvider = vmProvider.getPlaylistSelectionProvider();
 
+        Property<Playlist> selectedPlaylistProperty = playlistSelectionProvider.getSelectedPlaylistProperty();
+        Property<Boolean> editModeValueProperty = playlistSelectionProvider.getPlaylistIsSelectedProperty();
+        
+        SavePlaylistCmdParam savePlaylistCmdParam = new SavePlaylistCmdParam(playlistNameProperty, statusTextProperty, selectedPlaylistProperty, editModeValueProperty);
         savePlaylistCommand = new SavePlaylistCommand(vmProvider, savePlaylistCmdParam);
-    }
 
-    public CreateEditPlaylistViewModel(VmProvider vmProvider, Property<Playlist> selectedPlaylist) {
-
-        SavePlaylistCmdParam savePlaylistCmdParam = new SavePlaylistCmdParam(playlistNameProperty, statusTextProperty, selectedPlaylist);
-
-        savePlaylistCommand = new SavePlaylistCommand(vmProvider, savePlaylistCmdParam);
+        playlistNameProperty.bindBidirectional(vmProvider.getPlaylistSelectionProvider().getSelectedPlaylistNameProperty() );
     }
 
 }
