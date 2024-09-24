@@ -104,6 +104,7 @@ public class SwitchPrevAudioCommand extends DelegateCommand {
             @Override
             protected void action() {
                 prev(switchAudioCmdParam);
+                System.gc();
             }
         });
     }

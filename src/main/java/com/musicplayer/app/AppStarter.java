@@ -43,10 +43,10 @@ public class AppStarter extends MvvmfxEasyDIApplication {
     @Override
     public void initEasyDi(EasyDI context) throws IOException {
 
-        Function<Class<? extends ViewModel>, ViewTuple<? extends FxmlView<? extends ViewModel>, ? extends ViewModel>> viewModelFactoryFunc
+        Function<Class<? extends ViewModel>, ViewTuple<? extends FxmlView<? extends ViewModel>, ? extends ViewModel>> viewFactoryFunc
                 = viewContext::get;
 
-        context.bindInstance(NavigationService.class, new NavigationService(viewModelFactoryFunc));
+        context.bindInstance(NavigationService.class, new NavigationService(viewFactoryFunc));
 
         context.bindInstance(PlaylistSelectionProvider.class, new PlaylistSelectionProvider(
                 new SimpleObjectProperty<>(),
@@ -113,6 +113,8 @@ public class AppStarter extends MvvmfxEasyDIApplication {
         Scene scene = new Scene(root, 1400, 720);
         scene.getStylesheets().add( stylePath );
 
+        stage.setMinHeight(720);
+        stage.setMinWidth(1400);
         stage.setScene(scene);
         stage.show();
 

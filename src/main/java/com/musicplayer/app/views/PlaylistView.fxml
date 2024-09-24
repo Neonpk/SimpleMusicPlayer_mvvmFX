@@ -16,32 +16,36 @@
     </padding>
 
     <top>
-        <BorderPane BorderPane.alignment="CENTER">
+        <GridPane BorderPane.alignment="CENTER">
 
-            <left>
-                <FlowPane hgap="10">
-                    <Button text=">" fx:id="listenPlaylistButton" />
-                    <Button text="Удалить битые пути" fx:id="removeMissingTracksButton" />
-                </FlowPane>
-            </left>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
 
-            <center>
-                <Label fx:id="playlistNameLabel" BorderPane.alignment="CENTER">
-                    <padding>
-                        <Insets bottom="20" />
-                    </padding>
-                </Label>
-            </center>
+            <columnConstraints>
+                <ColumnConstraints halignment="LEFT"/>
+                <ColumnConstraints hgrow="SOMETIMES" halignment="CENTER" />
+                <ColumnConstraints hgrow="SOMETIMES" halignment="RIGHT" />
+            </columnConstraints>
 
-            <right>
-                <Button text="+" fx:id="addTracksButton"/>
-            </right>
+            <FlowPane hgap="10" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Button text=">" fx:id="listenPlaylistButton" />
+                <Button text="Удалить битые пути" fx:id="removeMissingTracksButton" />
+            </FlowPane>
 
-            <bottom>
-                <TextField promptText="Введите поисковый запрос..." fx:id="searchTextField"/>
-            </bottom>
+            <Label fx:id="playlistNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <padding>
+                    <Insets bottom="20" />
+                </padding>
+            </Label>
 
-        </BorderPane>
+            <Button text="+" fx:id="addTracksButton" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+
+            <TextField promptText="Введите поисковый запрос..." fx:id="searchTextField" GridPane.rowIndex="1" GridPane.columnSpan="3"/>
+
+
+        </GridPane>
     </top>
 
     <center>

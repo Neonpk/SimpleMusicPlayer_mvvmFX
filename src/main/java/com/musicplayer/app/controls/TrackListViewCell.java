@@ -43,6 +43,7 @@ public class TrackListViewCell extends ListCell<Track> {
     // Custom Fields
 
     private Media media;
+    private static Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
 
     public TrackListViewCell() {
         loadFXML();
@@ -79,10 +80,10 @@ public class TrackListViewCell extends ListCell<Track> {
 
             if(media != null) {
                 media.getMetadata().removeListener(trackMetadataListener.getMetaDataChangeListenger());
+                media = null;
                 System.gc();
             }
 
-            Image defaultCover = new Image(Objects.requireNonNull(AppStarter.class.getResource("images/nocover.jpg")).toString());
             String shortFileName = item.getFileName().replaceFirst(".*/(.*\\.(?:mp3|mp4))","$1");
             String addedDateText = new SimpleDateFormat("dd.MM.yyyy\nHH:mm:ss").
                     format(new Date(item.getAdded()));

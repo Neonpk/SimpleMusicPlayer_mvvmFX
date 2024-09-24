@@ -113,6 +113,7 @@ public class PlaySelectedTrackCommand extends DelegateCommand {
             @Override
             protected void action() {
                 playTrack(playTrackCmdParam);
+                System.gc();
             }
         });
     }

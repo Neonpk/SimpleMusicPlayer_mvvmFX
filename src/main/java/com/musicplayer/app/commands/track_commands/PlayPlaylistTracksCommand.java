@@ -124,6 +124,7 @@ public class PlayPlaylistTracksCommand extends DelegateCommand {
             @Override
             protected void action() {
                 playPlaylistTracks(playTrackCmdParam);
+                System.gc();
             }
         });
     }
